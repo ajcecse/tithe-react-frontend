@@ -29,10 +29,23 @@ const Layout = () => {
                 Koottayma
               </Link>
             </li>
+            <li>
+              <Link to="/family" className="block py-2 px-4 hover:bg-gray-700">
+                Family
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/familymanage"
+                className="block py-2 px-4 hover:bg-gray-700"
+              >
+                Family Management
+              </Link>
+            </li>
           </ul>
         </nav>
       </aside>
-      <main className="flex-1 p-8 pl-[16rem]">
+      <main className="flex-1 p-8 pl-[18rem]">
         <Outlet />
       </main>
     </div>

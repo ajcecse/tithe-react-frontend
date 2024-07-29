@@ -95,10 +95,7 @@ const Koottayma = () => {
     e.preventDefault();
     try {
       if (isEditing) {
-        await axiosInstance.put(
-          `/koottayma/${selectedKoottayma._id}`,
-          formData
-        );
+        await axiosInstance.put(`/koottayma/${formData._id}`, formData);
       } else {
         await axiosInstance.post("/koottayma/newkoottayma", {
           ...formData,
@@ -114,7 +111,8 @@ const Koottayma = () => {
   };
 
   const handleEdit = (koottayma) => {
-    fetchKoottaymaDetails(koottayma._id);
+    setFormData(koottayma);
+    setIsEditing(true);
   };
 
   const handleDelete = async (id) => {

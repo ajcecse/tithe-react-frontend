@@ -8,6 +8,7 @@ const Family = () => {
   const [koottaymas, setKoottaymas] = useState([]);
   const [selectedFamily, setSelectedFamily] = useState(null);
   const [formData, setFormData] = useState({
+    id: "",
     name: "",
     building: "",
     phone: "",
@@ -15,9 +16,6 @@ const Family = () => {
     city: "",
     district: "",
     pincode: "",
-    forane: "",
-    parish: "",
-    koottayma: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -68,7 +66,7 @@ const Family = () => {
 
   const fetchKoottaymas = async (parishId) => {
     try {
-      const response = await axiosInstance.get(`/koottayma/${parishId}`);
+      const response = await axiosInstance.get(`/koottayma/parish/${parishId}`);
       setKoottaymas(response.data || []);
     } catch (error) {
       console.error("Error fetching koottaymas:", error);
@@ -79,7 +77,9 @@ const Family = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axiosInstance.get(`/family/${koottaymaId}`);
+      const response = await axiosInstance.get(
+        `/family/kottayma/${koottaymaId}`
+      );
       setFamilies(response.data || []);
     } catch (error) {
       console.error("Error fetching families:", error);
@@ -90,6 +90,24 @@ const Family = () => {
     }
   };
 
+  const fetchFamilyDetails = async (familyId) => {
+    try {
+      const response = await axiosInstance.get(`/family/${familyId}`);
+      const familyDetail = response.data;
+      setFormData({
+        id: familyDetail.id,
+        name: familyDetail.name,
+        building: familyDetail.building,
+        phone: familyDetail.phone,
+        street: familyDetail.street,
+        city: familyDetail.city,
+        district: familyDetail.district,
+        pincode: familyDetail.pincode,
+      });
+    } catch (error) {
+      console.error("Error fetching forane details:", error);
+    }
+  };
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -98,9 +116,9 @@ const Family = () => {
     e.preventDefault();
     try {
       if (isEditing) {
-        await axiosInstance.put(`/family/${formData._id}`, formData);
+        await axiosInstance.put(`/family/${formData.id}`, formData);
       } else {
-        await axiosInstance.post("/family/newfamily", {
+        await axiosInstance.post("/family/", {
           ...formData,
           forane: selectedForane,
           parish: selectedParish,
@@ -115,7 +133,7 @@ const Family = () => {
   };
 
   const handleEdit = (family) => {
-    setFormData(family);
+    fetchFamilyDetails(family.id);
     setIsEditing(true);
   };
 
@@ -132,6 +150,7 @@ const Family = () => {
 
   const resetForm = () => {
     setFormData({
+      id: "",
       name: "",
       building: "",
       phone: "",
@@ -239,6 +258,23 @@ const Family = () => {
               type="text"
               name="name"
               value={formData.name}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="name"
+            >
+              ID
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="name"
+              type="text"
+              name="id"
+              value={formData.id}
               onChange={handleInputChange}
               required
             />
@@ -390,7 +426,7 @@ const Family = () => {
                 </button>
                 <button
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
-                  onClick={() => handleDelete(family._id)}
+                  onClick={() => handleDelete(family.id)}
                 >
                   Delete
                 </button>

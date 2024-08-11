@@ -141,7 +141,7 @@ const FamilyManagement = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Family Management</h1>
+      <h1 className="text-3xl font-bold mb-4">Family Finance Management</h1>
 
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">

@@ -39,7 +39,7 @@ const Layout = () => {
                 to="/familymanage"
                 className="block py-2 px-4 hover:bg-gray-700"
               >
-                Family Management
+                Finance Management
               </Link>
             </li>
           </ul>

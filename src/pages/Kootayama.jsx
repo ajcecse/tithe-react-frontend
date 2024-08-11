@@ -55,7 +55,7 @@ const Koottayma = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axiosInstance.get(`/koottayma/${parishId}`);
+      const response = await axiosInstance.get(`/koottayma/parish/${parishId}`);
       setKoottaymas(response.data || []);
     } catch (error) {
       console.error("Error fetching koottaymas:", error);
@@ -97,7 +97,7 @@ const Koottayma = () => {
       if (isEditing) {
         await axiosInstance.put(`/koottayma/${formData._id}`, formData);
       } else {
-        await axiosInstance.post("/koottayma/newkoottayma", {
+        await axiosInstance.post("/koottayma/", {
           ...formData,
           forane: selectedForane,
           parish: selectedParish,

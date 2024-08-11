@@ -22,7 +22,7 @@ const Forane = () => {
 
   const fetchForanes = async () => {
     try {
-      const response = await axiosInstance.get("/forane");
+      const response = await axiosInstance.get("/forane/");
       setForanes(response.data);
     } catch (error) {
       console.error("Error fetching foranes:", error);

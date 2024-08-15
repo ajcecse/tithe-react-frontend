@@ -16,6 +16,17 @@ const FamilyManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const relationOptions = [
+    "head",
+    "bride",
+    "groom",
+    "son",
+    "daughter",
+    "father",
+    "mother",
+    "brother",
+    "sister",
+  ];
   useEffect(() => {
     fetchForanes();
   }, []);
@@ -33,7 +44,9 @@ const FamilyManagement = () => {
   }, [selectedKoottayma]);
 
   useEffect(() => {
-    if (selectedFamily) fetchPersons(selectedFamily);
+    if (selectedFamily) {
+      fetchPersons(selectedFamily);
+    }
   }, [selectedFamily]);
 
   const fetchForanes = async () => {
@@ -56,7 +69,7 @@ const FamilyManagement = () => {
 
   const fetchKoottaymas = async (parishId) => {
     try {
-      const response = await axiosInstance.get(`/koottayma/${parishId}`);
+      const response = await axiosInstance.get(`/koottayma/parish/${parishId}`);
       setKoottaymas(response.data || []);
     } catch (error) {
       console.error("Error fetching koottaymas:", error);
@@ -65,7 +78,9 @@ const FamilyManagement = () => {
 
   const fetchFamilies = async (koottaymaId) => {
     try {
-      const response = await axiosInstance.get(`/family/${koottaymaId}`);
+      const response = await axiosInstance.get(
+        `/family/kottayma/${koottaymaId}`
+      );
       setFamilies(response.data || []);
     } catch (error) {
       console.error("Error fetching families:", error);
@@ -74,8 +89,18 @@ const FamilyManagement = () => {
 
   const fetchPersons = async (familyId) => {
     try {
-      const response = await axiosInstance.get(`/person/${familyId}`);
+      const response = await axiosInstance.get(`/person/family/${familyId}`);
       setPersons(response.data || []);
+    } catch (error) {
+      console.error("Error fetching persons:", error);
+    }
+  };
+
+  const fetchPersonDetails = async (personId) => {
+    try {
+      const response = await axiosInstance.get(`/person/${personId}`);
+      response.data.dob = formatDate(response.data.dob);
+      setFormData(response.data);
     } catch (error) {
       console.error("Error fetching persons:", error);
     }
@@ -90,16 +115,16 @@ const FamilyManagement = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+    const [day, month, year] = dateString.split("/");
     return `${year}-${month}-${day}`;
   };
-  const handleEdit = (person) => {
-    person.dob = formatDate(person.dob);
-    setFormData(person);
+  function formatDateSubmit(dateString) {
+    const [year, month, day] = dateString.split("-");
+    return `${day}/${month}/${year}`;
+  }
+  const handleEdit = (personId) => {
+    const personDetails = fetchPersonDetails(personId);
+    setFormData(personDetails);
     setIsEditing(true);
   };
 
@@ -116,11 +141,12 @@ const FamilyManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    formData.dob = formatDateSubmit(formData.dob);
     try {
       if (isEditing) {
         await axiosInstance.put(`/person/${formData._id}`, formData);
       } else {
-        await axiosInstance.post("/person/newperson", {
+        await axiosInstance.post("/person/", {
           ...formData,
           family: selectedFamily,
           forane: selectedForane,
@@ -141,86 +167,86 @@ const FamilyManagement = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Family Finance Management</h1>
+      <h1 className="text-3xl font-bold mb-4">Persons Management</h1>
+      <div className="min w-full flex justify-around">
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Select Forane
+          </label>
+          <select
+            className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={selectedForane}
+            onChange={handleSelectChange(setSelectedForane)}
+          >
+            <option value="">Select a Forane</option>
+            {foranes.map((forane) => (
+              <option key={forane._id} value={forane._id}>
+                {forane.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Select Forane
-        </label>
-        <select
-          className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          value={selectedForane}
-          onChange={handleSelectChange(setSelectedForane)}
-        >
-          <option value="">Select a Forane</option>
-          {foranes.map((forane) => (
-            <option key={forane._id} value={forane._id}>
-              {forane.name}
-            </option>
-          ))}
-        </select>
+        {selectedForane && (
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select Parish
+            </label>
+            <select
+              className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={selectedParish}
+              onChange={handleSelectChange(setSelectedParish)}
+            >
+              <option value="">Select a Parish</option>
+              {parishes.map((parish) => (
+                <option key={parish._id} value={parish._id}>
+                  {parish.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {selectedParish && (
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select Koottayma
+            </label>
+            <select
+              className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={selectedKoottayma}
+              onChange={handleSelectChange(setSelectedKoottayma)}
+            >
+              <option value="">Select a Koottayma</option>
+              {koottaymas.map((koottayma) => (
+                <option key={koottayma._id} value={koottayma._id}>
+                  {koottayma.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {selectedKoottayma && (
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select Family
+            </label>
+            <select
+              className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={selectedFamily}
+              onChange={handleSelectChange(setSelectedFamily)}
+            >
+              <option value="">Select a Family</option>
+              {families.map((family) => (
+                <option key={family.id} value={family.id}>
+                  {family.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
-
-      {selectedForane && (
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Select Parish
-          </label>
-          <select
-            className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            value={selectedParish}
-            onChange={handleSelectChange(setSelectedParish)}
-          >
-            <option value="">Select a Parish</option>
-            {parishes.map((parish) => (
-              <option key={parish._id} value={parish._id}>
-                {parish.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {selectedParish && (
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Select Koottayma
-          </label>
-          <select
-            className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            value={selectedKoottayma}
-            onChange={handleSelectChange(setSelectedKoottayma)}
-          >
-            <option value="">Select a Koottayma</option>
-            {koottaymas.map((koottayma) => (
-              <option key={koottayma._id} value={koottayma._id}>
-                {koottayma.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {selectedKoottayma && (
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Select Family
-          </label>
-          <select
-            className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            value={selectedFamily}
-            onChange={handleSelectChange(setSelectedFamily)}
-          >
-            <option value="">Select a Family</option>
-            {families.map((family) => (
-              <option key={family._id} value={family._id}>
-                {family.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
       {selectedFamily && (
         <div>
           <h2 className="text-2xl font-bold mb-4">Persons in Family</h2>
@@ -228,29 +254,17 @@ const FamilyManagement = () => {
             <thead>
               <tr>
                 <th className="py-2 border-b">Name</th>
-                <th className="py-2 border-b">Baptism Name</th>
-                <th className="py-2 border-b">Gender</th>
-                <th className="py-2 border-b">DOB</th>
-                <th className="py-2 border-b">Phone</th>
-                <th className="py-2 border-b">Relation</th>
                 <th className="py-2 border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
               {persons.map((person) => (
                 <tr key={person._id}>
-                  <td className="py-2 px-4 border-b">{person.name}</td>
-                  <td className="py-2 px-4 border-b">{person.baptismName}</td>
-                  <td className="py-2 px-4 border-b">{person.gender}</td>
-                  <td className="py-2 px-4 border-b">
-                    {new Date(person.dob).toLocaleDateString()}
-                  </td>
-                  <td className="py-2 px-4 border-b">{person.phone}</td>
-                  <td className="py-2 px-4 border-b">{person.relation}</td>
-                  <td className="py-2 px-4 border-b">
+                  <td className="py-2 pl-10 border-b">{person.name}</td>
+                  <td className="py-2 border-b flex justify-center">
                     <button
                       className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
-                      onClick={() => handleEdit(person)}
+                      onClick={() => handleEdit(person._id)}
                     >
                       Edit
                     </button>
@@ -345,14 +359,60 @@ const FamilyManagement = () => {
                 required
               />
             </div>
+
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
-                Relation
+                Select Relation
+              </label>
+              <select
+                name="relation"
+                className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                value={formData.relation || ""}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select Relation</option>
+                {relationOptions.map((rel) => (
+                  <option key={rel} value={rel}>
+                    {rel}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Email
               </label>
               <input
                 type="text"
-                name="relation"
-                value={formData.relation || ""}
+                name="email"
+                value={formData.email || ""}
+                onChange={handleInputChange}
+                className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Education
+              </label>
+              <input
+                type="text"
+                name="education"
+                value={formData.education || ""}
+                onChange={handleInputChange}
+                className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Occupation
+              </label>
+              <input
+                type="text"
+                name="occupation"
+                value={formData.occupation || ""}
                 onChange={handleInputChange}
                 className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 required

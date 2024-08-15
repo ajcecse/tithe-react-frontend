@@ -75,6 +75,7 @@ const Dashboard = () => {
         allFamilies = [...allFamilies, ...families];
       }
       setFamilyCount(totalFamilyCount);
+      console.log(allFamilies);
       fetchAllPersons(allFamilies);
     } catch (error) {
       console.error("Error fetching families:", error);
@@ -85,8 +86,8 @@ const Dashboard = () => {
     try {
       let totalPersonCount = 0;
       for (let i = 0; i < families.length; i++) {
-        const familyId = families[i]._id;
-        const response = await axiosInstance.get(`/person/${familyId}`);
+        const familyId = families[i].id;
+        const response = await axiosInstance.get(`/person/family/${familyId}`);
         const persons = response.data || [];
         totalPersonCount += persons.length;
       }

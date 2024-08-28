@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../axiosConfig"; // Update the path as necessary
-
+import { Link } from "react-router-dom";
 const Dashboard = () => {
   const [foranes, setForanes] = useState([]);
   const [parishCount, setParishCount] = useState(0);
@@ -98,29 +98,95 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Kanjirapally</h1>
-      <p>Welcome to your dashboard. Here's an overview of your key metrics.</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-        <div className="bg-white p-4 rounded shadow">
+    <div className="flex flex-col items-center">
+      <h1 className="text-2xl font-bold mb-4">
+        Kanjirapally Diocese Finance Mangement
+      </h1>
+      <p>Here's an overview of your key metrics.</p>
+      <div className="flex gap-[10rem] p-5">
+        <div className=" p-4 px-10 w-full flex flex-col items-center">
           <h2 className="font-bold text-lg">Foranes</h2>
           <p className="text-3xl font-bold text-blue-500">{foranes.length}</p>
         </div>
-        <div className="bg-white p-4 rounded shadow">
+        <div className=" p-4 px-10 w-full flex flex-col items-center shadow">
           <h2 className="font-bold text-lg">Parishes</h2>
           <p className="text-3xl font-bold text-green-500">{parishCount}</p>
         </div>
-        <div className="bg-white p-4 rounded shadow">
+        <div className=" p-4 px-10 w-full flex flex-col items-center shadow">
           <h2 className="font-bold text-lg">Koottaymas</h2>
           <p className="text-3xl font-bold text-red-500">{koottaymaCount}</p>
         </div>
-        <div className="bg-white p-4 rounded shadow">
+        <div className=" p-4 px-10 w-full flex flex-col items-center shadow">
           <h2 className="font-bold text-lg">Families</h2>
           <p className="text-3xl font-bold text-yellow-500">{familyCount}</p>
         </div>
-        <div className="bg-white p-4 rounded shadow">
+        <div className=" p-4 px-10 w-full flex flex-col items-center shadow">
           <h2 className="font-bold text-lg">Persons</h2>
           <p className="text-3xl font-bold text-purple-500">{personCount}</p>
+        </div>
+      </div>
+      <h1 className="text-2xl font-bold my-2">Actions</h1>
+      <div className="flex flex-col mt-2 w-full">
+        <div className="flex justify-center p-2">
+          <div className="bg-white p-5 rounded shadow w-[50%] flex justify-center">
+            <Link
+              to="/finance"
+              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
+              Family Finance
+            </Link>
+          </div>
+        </div>
+        <div className="flex p-3 gap-[3rem]">
+          <div className="bg-white p-4 rounded shadow w-full flex justify-center">
+            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+              Add Family
+            </h2>
+          </div>
+          <div className="bg-white p-4 rounded shadow w-full flex justify-center">
+            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+              Manage Family
+            </h2>
+          </div>
+          <div className="bg-white p-4 rounded shadow w-full flex justify-center">
+            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+              Move Family
+            </h2>
+          </div>
+        </div>
+        <div className="flex p-3 gap-[3rem]">
+          <div className="bg-white p-4 rounded shadow w-full flex justify-center">
+            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+              Add Person
+            </h2>
+          </div>
+          <div className="bg-white p-4 rounded shadow w-full flex justify-center">
+            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+              Manage Person
+            </h2>
+          </div>
+          <div className="bg-white p-4 rounded shadow w-full flex justify-center">
+            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+              Move Person
+            </h2>
+          </div>
+        </div>
+        <div className="flex p-3 gap-[3rem]">
+          <div className="bg-white p-4 rounded shadow w-full flex justify-center">
+            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+              Create/Manage Koottayma
+            </h2>
+          </div>
+          <div className="bg-white p-4 rounded shadow w-full flex justify-center">
+            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+              Create/Manage Parish
+            </h2>
+          </div>
+          <div className="bg-white p-4 rounded shadow w-full flex justify-center">
+            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+              Create/Manage Forane
+            </h2>
+          </div>
         </div>
       </div>
     </div>

@@ -13,8 +13,8 @@ const Layout = () => {
     }
   }, [location.pathname]); // This effect runs every time the path changes
   return (
-    <div className="flex h-screen  bg-gray-100">
-      <aside
+    <div className="flex h-screen bg-gray-100">
+      {/* <aside
         className={
           dash
             ? "w-32 fixed h-screen bg-gray-800 text-white p-4"
@@ -66,10 +66,8 @@ const Layout = () => {
             </li>
           </ul>
         </nav>
-      </aside>
-      <main
-        className={dash ? "flex-1 p-8 pl-[10rem]" : "flex-1 p-8 pl-[18rem]"}
-      >
+      </aside> */}
+      <main className="flex-1 p-10">
         <Outlet />
       </main>
     </div>

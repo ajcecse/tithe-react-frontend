@@ -15,6 +15,8 @@ const FamilyManagement = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchID, setSearchID] = useState("");
+  const [displayRes, setDisplayRes] = useState(null);
   const [isTransaction, setIsTransaction] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [transactionData, setTransactionData] = useState({
@@ -253,9 +255,19 @@ const FamilyManagement = () => {
     setIsEditing(false);
   };
 
+  const handleSearchInputChange = (e) => {
+    setSearchID(e.target.value);
+    console.log(searchID);
+    if (searchID.length == 6) {
+      setSelectedFamily(searchID);
+      setDisplayRes(true);
+    } else {
+      setDisplayRes(false);
+    }
+  };
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Persons Management</h1>
+    <div className="container mx-auto flex flex-col items-center ">
+      <h1 className="text-3xl font-bold p-10">Family Finances</h1>
       <div className="min w-full flex justify-around">
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -334,8 +346,20 @@ const FamilyManagement = () => {
             </select>
           </div>
         )}
+        <div>
+          <label className="block text-gray-700 text-md font-bold mb-2">
+            Enter Famliy ID and click SPACE
+          </label>
+          <input
+            type="text"
+            placeholder="Enter Family ID"
+            value={searchID}
+            onChange={handleSearchInputChange}
+            className="p-2"
+          />
+        </div>
       </div>
-      {selectedFamily && (
+      {selectedFamily && displayRes && (
         <div>
           <h2 className="text-2xl font-bold mb-4">Persons in Family</h2>
           <table className="min-w-full bg-white border border-gray-300">

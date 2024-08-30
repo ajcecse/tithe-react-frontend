@@ -360,7 +360,7 @@ const FamilyManagement = () => {
         </div>
       </div>
       {selectedFamily && displayRes && (
-        <div>
+        <div className="w-full">
           <h2 className="text-2xl font-bold mb-4">Persons in Family</h2>
           <table className="min-w-full bg-white border border-gray-300">
             <thead>
@@ -425,7 +425,7 @@ const FamilyManagement = () => {
           </h2>
           <form
             onSubmit={handleSubmit}
-            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex"
           >
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">

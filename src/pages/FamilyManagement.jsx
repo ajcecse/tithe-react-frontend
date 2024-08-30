@@ -99,7 +99,7 @@ const FamilyManagement = () => {
   const fetchPersonDetails = async (personId) => {
     try {
       const response = await axiosInstance.get(`/person/${personId}`);
-      response.data.dob = formatDate(response.data.dob);
+      response.data.dob = formatDateSubmit(response.data.dob);
       setFormData(response.data);
     } catch (error) {
       console.error("Error fetching persons:", error);
@@ -140,8 +140,8 @@ const FamilyManagement = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
     formData.dob = formatDateSubmit(formData.dob);
+
     try {
       if (isEditing) {
         await axiosInstance.put(`/person/${formData._id}`, formData);

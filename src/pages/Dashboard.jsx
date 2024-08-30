@@ -139,9 +139,12 @@ const Dashboard = () => {
         </div>
         <div className="flex p-3 gap-[3rem]">
           <div className="bg-white p-4 rounded shadow w-full flex justify-center">
-            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+            <Link
+              to="/family"
+              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
               Add Family
-            </h2>
+            </Link>
           </div>
           <div className="bg-white p-4 rounded shadow w-full flex justify-center">
             <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
@@ -149,43 +152,64 @@ const Dashboard = () => {
             </h2>
           </div>
           <div className="bg-white p-4 rounded shadow w-full flex justify-center">
-            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+            <Link
+              to="/movefamily"
+              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
               Move Family
-            </h2>
+            </Link>
           </div>
         </div>
         <div className="flex p-3 gap-[3rem]">
           <div className="bg-white p-4 rounded shadow w-full flex justify-center">
-            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+            <Link
+              to="/familymanage"
+              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
               Add Person
-            </h2>
+            </Link>
           </div>
           <div className="bg-white p-4 rounded shadow w-full flex justify-center">
-            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+            <Link
+              to="/familymanage"
+              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
               Manage Person
-            </h2>
+            </Link>
           </div>
           <div className="bg-white p-4 rounded shadow w-full flex justify-center">
-            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+            <Link
+              to="/moveperson"
+              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
               Move Person
-            </h2>
+            </Link>
           </div>
         </div>
         <div className="flex p-3 gap-[3rem]">
           <div className="bg-white p-4 rounded shadow w-full flex justify-center">
-            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+            <Link
+              to="/koottayma"
+              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
               Create/Manage Koottayma
-            </h2>
+            </Link>
           </div>
           <div className="bg-white p-4 rounded shadow w-full flex justify-center">
-            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+            <Link
+              to="/parish"
+              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
               Create/Manage Parish
-            </h2>
+            </Link>
           </div>
           <div className="bg-white p-4 rounded shadow w-full flex justify-center">
-            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
+            <Link
+              to="/forane"
+              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
               Create/Manage Forane
-            </h2>
+            </Link>
           </div>
         </div>
       </div>

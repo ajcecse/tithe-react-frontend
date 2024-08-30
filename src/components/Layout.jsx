@@ -29,22 +29,13 @@ const Layout = () => {
               </Link>
             </li>
             <li>
-              <Link to="/forane" className="block py-2 px-4 hover:bg-gray-700">
-                Forane
-              </Link>
+             
             </li>
             <li>
-              <Link to="/parish" className="block py-2 px-4 hover:bg-gray-700">
-                Parish
-              </Link>
+              
             </li>
             <li>
-              <Link
-                to="/koottayma"
-                className="block py-2 px-4 hover:bg-gray-700"
-              >
-                Koottayma
-              </Link>
+              
             </li>
             <li>
               <Link to="/family" className="block py-2 px-4 hover:bg-gray-700">

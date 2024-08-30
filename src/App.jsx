@@ -7,6 +7,8 @@ import Koottayma from "./pages/Kootayama.jsx";
 import Family from "./pages/Family.jsx";
 import FamilyManagement from "./pages/FamilyManagement.jsx";
 import FamilyTransactions from "./pages/Finance.jsx";
+import MoveFamily from "./pages/moveFamily.jsx";
+import MovePerson from "./pages/movePerson.jsx";
 // import Settings from "./pages/Settings";
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
           <Route path="family" element={<Family />} />
           <Route path="familymanage" element={<FamilyManagement />} />
           <Route path="finance" element={<FamilyTransactions />} />
+          <Route path="movefamily" element={<MoveFamily />} />
+          <Route path="moveperson" element={<MovePerson />} />
         </Route>
       </Routes>
     </Router>

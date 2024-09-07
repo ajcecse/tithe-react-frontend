@@ -9,6 +9,7 @@ import FamilyManagement from "./pages/FamilyManagement.jsx";
 import FamilyTransactions from "./pages/Finance.jsx";
 import MoveFamily from "./pages/moveFamily.jsx";
 import MovePerson from "./pages/movePerson.jsx";
+import Report from "./pages/Report.jsx";
 // import Settings from "./pages/Settings";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="finance" element={<FamilyTransactions />} />
           <Route path="movefamily" element={<MoveFamily />} />
           <Route path="moveperson" element={<MovePerson />} />
+          <Route path="report" element={<Report />} />
         </Route>
       </Routes>
     </Router>

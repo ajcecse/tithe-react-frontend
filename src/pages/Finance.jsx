@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axiosInstance from "../axiosConfig"; // Adjust the import path as needed
 
 const FamilyManagement = () => {
+  const [familyHead, setFamilyHead] = useState("");
   const [foranes, setForanes] = useState([]);
   const [parishes, setParishes] = useState([]);
   const [koottaymas, setKoottaymas] = useState([]);
@@ -19,13 +20,16 @@ const FamilyManagement = () => {
   const [displayRes, setDisplayRes] = useState(null);
   const [isTransaction, setIsTransaction] = useState(false);
   const [transactions, setTransactions] = useState([]);
+  const [dropdown, setDropdown] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [transactionData, setTransactionData] = useState({
     type: "",
     amountPaid: "",
     date: "",
     description: "",
   });
-  const [totalTransactions, setTotalTransactions] = useState(0);
+  const [currentTransaction, setCurrentTransaction] = useState([]);
+  const [totalTransactions, setTotalTransactions] = useState([]);
   const relationOptions = [
     "head",
     "bride",
@@ -55,16 +59,34 @@ const FamilyManagement = () => {
 
   useEffect(() => {
     if (selectedFamily) {
-      fetchPersons(selectedFamily);
+      //get the previous data
+      // const prev = totalPersonTransaction():
+      setCurrentTransaction([]);
+      setDisplayRes(true);
     }
   }, [selectedFamily]);
+
+  useEffect(() => {
+    if (persons.length > 0 || saved) {
+      const fetchAllTransactions = async () => {
+        const allTransactions = await Promise.all(
+          persons.map(async (p) => {
+            const totalAmount = await totalPersonTransaction(p._id);
+            return totalAmount;
+          })
+        );
+        setTransactions(allTransactions);
+      };
+
+      fetchAllTransactions();
+    }
+  }, [persons]);
 
   useEffect(() => {
     if (formData._id) {
       fetchTransactions(formData._id);
     }
   }, [formData]);
-
   const fetchForanes = async () => {
     try {
       const response = await axiosInstance.get("/forane");
@@ -97,6 +119,10 @@ const FamilyManagement = () => {
       const response = await axiosInstance.get(
         `/family/kottayma/${koottaymaId}`
       );
+      response.data.map((p) => {
+        fetchPersons(p.id);
+      });
+
       setFamilies(response.data || []);
     } catch (error) {
       console.error("Error fetching families:", error);
@@ -106,6 +132,11 @@ const FamilyManagement = () => {
   const fetchPersons = async (familyId) => {
     try {
       const response = await axiosInstance.get(`/person/family/${familyId}`);
+      response.data.map((p) => {
+        if (p.relation === "head") {
+          setFamilyHead(p.name);
+        }
+      });
       fetchFamilyDetails(response.data);
       setPersons(response.data || []);
     } catch (error) {
@@ -118,6 +149,7 @@ const FamilyManagement = () => {
         `/person/${personId}/transactions`
       );
       setTransactions(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
@@ -139,6 +171,27 @@ const FamilyManagement = () => {
       const responses = await Promise.all(
         persons.map(async (p) => {
           const response = await axiosInstance.get(`/person/${p._id}`);
+          setTotalTransactions((prevTotalTransactions) => {
+            // Check if the personId already exists in the array
+            const existingTransaction = prevTotalTransactions.find(
+              (item) => item.id === p._id
+            );
+
+            if (existingTransaction) {
+              // Update the existing transaction
+              return prevTotalTransactions.map((item) =>
+                item.id === p._id
+                  ? { ...item, amountPaid: totalPersonTransaction(p._id) }
+                  : item
+              );
+            } else {
+              // Add a new transaction
+              return [
+                ...prevTotalTransactions,
+                { id: p._id, amountPaid: totalPersonTransaction(p._id) },
+              ];
+            }
+          });
           return response.data; // or whatever data you want to return
         })
       );
@@ -163,21 +216,9 @@ const FamilyManagement = () => {
       family: selectedFamily,
     });
   };
-  const handleAddTransaction = async () => {
+  const handleAddTransaction = async (current) => {
     try {
-      const response = await axiosInstance.post(
-        `transaction/`,
-        transactionData
-      );
-      setTransactions([...transactions, response.data]);
-      setTransactionData({
-        amountPaid: "",
-        date: "",
-        forane: selectedForane,
-        parish: selectedParish,
-        family: selectedFamily,
-      });
-      totalPersonTransaction(transactionData.person);
+      await axiosInstance.post(`transaction/`, current);
     } catch (error) {
       console.error("Error adding transaction:", error);
     }
@@ -188,7 +229,12 @@ const FamilyManagement = () => {
       const response = await axiosInstance.get(
         `transaction/person/${personId}`
       );
-      setTotalTransactions(response.data.totalAmount);
+      console.log(response.data);
+      if (response.data.totalAmount) {
+        return response.data.totalAmount;
+      } else {
+        return 0;
+      }
     } catch (error) {
       console.error("Error adding transaction:", error);
     }
@@ -211,12 +257,23 @@ const FamilyManagement = () => {
     setFormData(personDetails);
     setIsEditing(!isEditing);
   };
-  const handleTransaction = (personId) => {
-    totalPersonTransaction(personId);
-    setTransactionData({
-      person: personId,
+  const handleTransaction = () => {
+    currentTransaction.map((p) => {
+      handleAddTransaction({
+        amountPaid: p.amountPaid,
+        person: p.id,
+        forane: selectedForane,
+        family: selectedFamily,
+        parish: selectedParish,
+      });
+      fetchPersons(selectedFamily);
+      setSaved(true);
     });
-    setIsTransaction(!isTransaction);
+
+    // setTransactionData({
+    //   person: personId,
+    // });
+    // setIsTransaction(!isTransaction);
   };
   const handleDelete = async (personId) => {
     if (window.confirm("Are you sure you want to delete this person?")) {
@@ -264,6 +321,29 @@ const FamilyManagement = () => {
     } else {
       setDisplayRes(false);
     }
+  };
+
+  const handleCurrentChange = (e, personId) => {
+    let current = e.target.value;
+    if (!isNaN(current)) {
+      setCurrentTransaction((prevTransaction) => {
+        // Check if the personId already exists in the array
+        const existingTransaction = prevTransaction.find(
+          (item) => item.id === personId
+        );
+
+        if (existingTransaction) {
+          // Update the existing transaction
+          return prevTransaction.map((item) =>
+            item.id === personId ? { ...item, amountPaid: current } : item
+          );
+        } else {
+          // Add a new transaction
+          return [...prevTransaction, { id: personId, amountPaid: current }];
+        }
+      });
+    }
+    console.log(currentTransaction);
   };
   return (
     <div className="container mx-auto flex flex-col items-center ">
@@ -340,7 +420,7 @@ const FamilyManagement = () => {
               <option value="">Select a Family</option>
               {families.map((family) => (
                 <option key={family.id} value={family.id}>
-                  {family.name}
+                  {family.name} - {familyHead}
                 </option>
               ))}
             </select>
@@ -360,8 +440,14 @@ const FamilyManagement = () => {
         </div>
       </div>
       {selectedFamily && displayRes && (
-        <div className="w-full">
+        <div className="w-full flex flex-col items-center">
           <h2 className="text-2xl font-bold mb-4">Persons in Family</h2>
+          <button
+            className="bg-green-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
+            onClick={handleTransaction}
+          >
+            Save
+          </button>
           <table className="min-w-full bg-white border border-gray-300">
             <thead>
               <tr>
@@ -372,11 +458,13 @@ const FamilyManagement = () => {
                 <th className="p-4 border-b">DOB</th>
                 <th className="p-4 border-b">Occupation</th>
                 <th className="p-4 border-b">Education</th>
+                <th className="p-4 border-b">Total Amount</th>
+                <th className="py-4 pr-4 pl-2 borde-b">Current Amount</th>
                 <th className="p-4 border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {persons.map((person) => (
+              {persons.map((person, index) => (
                 <tr key={person._id}>
                   <td className="py-2 pl-[3rem] border-b">{person.name}</td>
                   <td className="py-2 pl-[3rem] border-b">
@@ -391,19 +479,24 @@ const FamilyManagement = () => {
                   <td className="py-2 pl-[3rem] border-b">
                     {person.education}
                   </td>
+                  <td className="py-2 pl-[3rem] border-b ">
+                    <p>{transactions[index]}</p>
+                  </td>
                   <td className="py-2 border-b flex justify-center">
+                    <input
+                      className="border border-black w-[50%] py-2 px-4"
+                      type="number"
+                      onChange={(e) => handleCurrentChange(e, person._id)}
+                    ></input>
+                  </td>
+                  <td className="py-2 border-b">
                     <button
                       className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
                       onClick={() => handleEdit(person._id)}
                     >
                       ✎
                     </button>
-                    <button
-                      className="bg-green-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
-                      onClick={() => handleTransaction(person._id)}
-                    >
-                      $
-                    </button>
+
                     <button
                       className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
                       onClick={() => handleDelete(person._id)}
@@ -572,45 +665,6 @@ const FamilyManagement = () => {
               )}
             </div>
           </form>
-        </div>
-      )}
-      {isTransaction && (
-        <div className="mb-4">
-          <h3 className="text-xl font-bold mb-2">Manage Transactions</h3>
-
-          <label className="block text-gray-700 text-sm font-bold mb-2 mt-4">
-            Total Payed till now
-          </label>
-          <p className="text-lg">{totalTransactions}</p>
-          <label className="block text-gray-700 text-sm font-bold mb-2 mt-4">
-            Amount
-          </label>
-          <input
-            type="number"
-            name="amountPaid"
-            value={transactionData.amountPaid}
-            onChange={handleTransactionChange}
-            className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-
-          <label className="block text-gray-700 text-sm font-bold mb-2 mt-4">
-            Date
-          </label>
-          <input
-            type="date"
-            name="date"
-            value={transactionData.date}
-            onChange={handleTransactionChange}
-            className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-
-          <button
-            type="button"
-            onClick={handleAddTransaction}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-          >
-            Add Transaction
-          </button>
         </div>
       )}
     </div>

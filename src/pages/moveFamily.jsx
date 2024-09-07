@@ -6,6 +6,7 @@ const MoveFamily = () => {
   const [parishes, setParishes] = useState([]);
   const [koottaymas, setKoottaymas] = useState([]);
   const [persons, setPersons] = useState([]);
+  const [families, setFamilies] = useState([]);
   const [selectedForane, setSelectedForane] = useState("");
   const [selectedParish, setSelectedParish] = useState("");
   const [selectedKoottayma, setSelectedKoottayma] = useState("");
@@ -37,6 +38,7 @@ const MoveFamily = () => {
   useEffect(() => {
     if (selectedFamily) {
       fetchPersons(selectedFamily);
+      setDisplayRes(true);
     }
   }, [selectedFamily]);
 
@@ -144,6 +146,7 @@ const MoveFamily = () => {
           setSelectedForane("");
           setSelectedParish("");
           setSelectedKoottayma("");
+          window.location.reload(false);
         }
       } catch (error) {
         console.error("Error saving person:", error);
@@ -168,6 +171,85 @@ const MoveFamily = () => {
   return (
     <div className="container mx-auto flex flex-col items-center ">
       <h1 className="text-3xl font-bold p-10">Move Family</h1>
+      <div className="min w-full flex justify-around">
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Select Forane
+          </label>
+          <select
+            className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={selectedForane}
+            onChange={handleSelectChange(setSelectedForane)}
+          >
+            <option value="">Select a Forane</option>
+            {foranes.map((forane) => (
+              <option key={forane._id} value={forane._id}>
+                {forane.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {selectedForane && (
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select Parish
+            </label>
+            <select
+              className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={selectedParish}
+              onChange={handleSelectChange(setSelectedParish)}
+            >
+              <option value="">Select a Parish</option>
+              {parishes.map((parish) => (
+                <option key={parish._id} value={parish._id}>
+                  {parish.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {selectedParish && (
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select Koottayma
+            </label>
+            <select
+              className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={selectedKoottayma}
+              onChange={handleSelectChange(setSelectedKoottayma)}
+            >
+              <option value="">Select a Koottayma</option>
+              {koottaymas.map((koottayma) => (
+                <option key={koottayma._id} value={koottayma._id}>
+                  {koottayma.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {selectedKoottayma && (
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select Family
+            </label>
+            <select
+              className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={selectedFamily}
+              onChange={handleSelectChange(setSelectedFamily)}
+            >
+              <option value="">Select a Family</option>
+              {families.map((family) => (
+                <option key={family.id} value={family.id}>
+                  {family.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
       <div className="min w-full flex justify-around">
         <div>
           <label className="block text-gray-700 text-md font-bold mb-2">
@@ -195,7 +277,6 @@ const MoveFamily = () => {
                 <th className="p-4 border-b">DOB</th>
                 <th className="p-4 border-b">Occupation</th>
                 <th className="p-4 border-b">Education</th>
-                <th className="p-4 border-b">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -224,7 +305,7 @@ const MoveFamily = () => {
         <div className="flex flex-col items-center py-4">
           {" "}
           <h1 className="text-[3rem] font-bold">Current</h1>
-          <div className="flex justify-around gap-[10rem] text-2xl">
+          {/* <div className="flex justify-around gap-[10rem] text-2xl">
             <div className="flex gap-2">
               <h1>Forane :</h1>
               <p>{forane.name}</p>
@@ -237,7 +318,7 @@ const MoveFamily = () => {
               <h1>Kootayma :</h1>
               <p>{koottayma.name}</p>
             </div>
-          </div>
+          </div> */}
           <div className="min w-full flex justify-around">
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">

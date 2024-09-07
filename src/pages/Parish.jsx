@@ -92,7 +92,7 @@ const Parish = () => {
       if (isEditing) {
         await axiosInstance.put(`/parish/${selectedParish._id}`, formData);
       } else {
-        await axiosInstance.post("/parish/newparish", {
+        await axiosInstance.post("/parish/", {
           ...formData,
           forane: selectedForane,
         });

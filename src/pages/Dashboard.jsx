@@ -127,7 +127,7 @@ const Dashboard = () => {
       </div>
       <h1 className="text-2xl font-bold my-2">Actions</h1>
       <div className="flex flex-col mt-2 w-full">
-        <div className="flex justify-center p-2">
+        <div className="flex justify-center p-2 gap-10">
           <div className="bg-white p-5 rounded shadow w-[50%] flex justify-center">
             <Link
               to="/finance"
@@ -136,7 +136,17 @@ const Dashboard = () => {
               Family Finance
             </Link>
           </div>
+
+          <div className="bg-white p-5 rounded shadow w-[50%] flex justify-center">
+            <Link
+              to="/statistics"
+              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
+              Statistics
+            </Link>
+          </div>
         </div>
+
         <div className="flex p-3 gap-[3rem]">
           <div className="bg-white p-4 rounded shadow w-full flex justify-center">
             <Link

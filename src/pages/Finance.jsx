@@ -49,6 +49,7 @@ const FamilyManagement = () => {
   const [parishName, setParishName] = useState("");
   const [familyName, setFamilyName] = useState("");
   const [kootaymaName, setKootaymaName] = useState("");
+  const [familyTotal, setFamilyTotal] = useState(0);
   useEffect(() => {
     fetchForanes();
   }, []);
@@ -419,6 +420,7 @@ const FamilyManagement = () => {
     fetchParishName();
     fetchFamilyName();
     fetchKottaymaName();
+    fetchFamilyTotal();
   };
 
   const fetchParishName = async () => {
@@ -434,7 +436,8 @@ const FamilyManagement = () => {
   const fetchFamilyName = async () => {
     try {
       const family = await axiosInstance.get(`family/${selectedFamily}`);
-      setFamilyName(family.data.name);
+      console.log(family);
+      setFamilyName(family.data);
     } catch (error) {
       console.error("Error fetching family name", error);
     }
@@ -451,6 +454,16 @@ const FamilyManagement = () => {
       console.error("Error fetching kootayma name", error);
     }
   };
+
+  const fetchFamilyTotal = async () => {
+    var calFamilyTotal = 0;
+    transactions.map((p) => {
+      calFamilyTotal = calFamilyTotal + p;
+    });
+
+    setFamilyTotal(calFamilyTotal);
+  };
+
   return !report ? (
     <div className="container mx-auto flex flex-col items-center ">
       <h1 className="text-3xl font-bold">Family Finances</h1>
@@ -808,7 +821,7 @@ const FamilyManagement = () => {
         </div>
         <div className="details-item">
           <strong className="malayalam-text3">{malaylamText[5]}</strong>
-          <strong>{familyName}</strong>
+          <strong>{familyName.name}</strong>
         </div>
         <div className="details-item">
           <strong className="malayalam-text3"> {malaylamText[6]} :</strong>
@@ -820,7 +833,7 @@ const FamilyManagement = () => {
         </div>
         <div className="details-item">
           <strong className="malayalam-text3">{malaylamText[8]}</strong>{" "}
-          <strong>CHERUVALLY, 686 543</strong>
+          <strong>{familyName.district + "," + familyName.pincode}</strong>
         </div>
         <div className="details-item">
           <strong className="malayalam-text3">{malaylamText[9]}</strong>
@@ -829,144 +842,115 @@ const FamilyManagement = () => {
       </div>
 
       <div className="table-container">
-        <table>
+        <table className="report-table">
           <thead>
             <tr>
-              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+              <th
+                className="malayalam-text3 report-th"
+                style={{ fontSize: "15px" }}
+              >
                 {malaylamText[10]}
               </th>
-              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+              <th
+                className="malayalam-text3 report-th"
+                style={{ fontSize: "15px" }}
+              >
                 {malaylamText[11]}
               </th>
-              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+              <th
+                className="malayalam-text3 report-th"
+                style={{ fontSize: "15px" }}
+              >
                 {malaylamText[12]}
               </th>
-              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+              <th
+                className="malayalam-text3 report-th"
+                style={{ fontSize: "15px" }}
+              >
                 {malaylamText[13]}
               </th>
-              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+              <th
+                className="malayalam-text3 report-th"
+                style={{ fontSize: "15px" }}
+              >
                 {malaylamText[14]}
               </th>
-              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+              <th
+                className="malayalam-text3 report-th"
+                style={{ fontSize: "15px" }}
+              >
                 {malaylamText[15]}
               </th>
-              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+              <th
+                className="malayalam-text3 report-th"
+                style={{ fontSize: "15px" }}
+              >
                 {malaylamText[16]}
               </th>
-              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+              <th
+                className="malayalam-text3 report-th"
+                style={{ fontSize: "15px" }}
+              >
                 {malaylamText[17]}
               </th>
-              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+              <th
+                className="malayalam-text3 report-th"
+                style={{ fontSize: "15px" }}
+              >
                 {malaylamText[18]}
               </th>
-              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+              <th
+                className="malayalam-text3 report-th"
+                style={{ fontSize: "15px" }}
+              >
                 {malaylamText[19]}
               </th>
             </tr>
           </thead>
           <tbody>
+            {persons.map((person, index) => (
+              <tr key={person._id}>
+                <td className=" py-3 px-2 text-[0.75rem] report-td">
+                  {index + 1}
+                </td>
+                <td className="py-3 px-2 text-[0.75rem] report-td">
+                  {person.name}
+                </td>
+                <td className="py-3 px-2 text-[0.75rem] report-td">
+                  {person.baptismName}
+                </td>
+                <td className="py-3 px-2 text-[0.75rem] report-td">
+                  {person.relation}
+                </td>
+                <td className="py-3 px-2 text-[0.75rem] report-td">
+                  {person.gender}
+                </td>
+                <td className="py-3 px-2 text-[0.75rem] report-td">
+                  {person.dob}
+                </td>
+                <td className="py-3 px-2 text-[0.75rem] report-td">
+                  {person.occupation}
+                </td>
+                <td className="py-3 px-2 text-[0.75rem] report-td">
+                  {person.education}
+                </td>
+                <td className="py-3 px-2 text-[0.75rem] report-td ">
+                  <p>{transactions[index]}</p>
+                </td>
+                <td className="py-3 px-2 text-[0.75rem] report-td">
+                  {currentTransactions[index].amountPaid}
+                </td>
+              </tr>
+            ))}
             <tr>
-              <td>1</td>
-              <td>ALEY</td>
-              <td>ELSAMMA</td>
-              <td style={{ fontSize: "10px" }}>FAMILY HEAD</td>
-              <td>F</td>
-              <td>07-06-1944</td>
-              <td>RTD TEACHER</td>
-              <td>B.A, B.ED</td>
-              <td>3345</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>STANSLAVUS</td>
-              <td>FR. STANLY</td>
-              <td>SON</td>
-              <td>M</td>
-              <td>30-11-1983</td>
-              <td>PRIEST</td>
-              <td>B.A</td>
-              <td>585</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>ABRAHAM</td>
-              <td>ABY</td>
-              <td>SON</td>
-              <td>M</td>
-              <td>06-03-1986</td>
-              <td></td>
-              <td></td>
-              <td>1770</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>MARY</td>
-              <td>REMYA</td>
-              <td>DAUGHTER IN LAW</td>
-              <td>F</td>
-              <td>07-03-1989</td>
-              <td></td>
-              <td></td>
-              <td>400</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>EAPEN</td>
-              <td>EAPEN</td>
-              <td>GRAND SON</td>
-              <td>M</td>
-              <td>29-06-2019</td>
-              <td></td>
-              <td></td>
-              <td>200</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td> </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td> </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td> </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td colspan="9" style={{ textAlign: "right" }}>
+              <td
+                className="report-td"
+                colSpan="9"
+                style={{ textAlign: "right" }}
+              >
                 <strong>TOTAL</strong>
               </td>
-              <td>6300</td>
+              <td className="report-td">{familyTotal}</td>
             </tr>
           </tbody>
         </table>

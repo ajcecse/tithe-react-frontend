@@ -1,3 +1,168 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@page {
+  size: A4;
+  margin: 20mm;
+}
+@font-face {
+  font-family: "FML-TTAyilyamBold";
+  src: url("FMLAL0NTT.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "FML-TTGopika";
+  src: url("FMLGP0BTT.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "FML-TTGopika1";
+  src: url("FMLGP0NTT.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "FML-TTJaya";
+  src: url("FMLJA0ITT.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "FML-TTJyothy";
+  src: url("FMLJY0NTT.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.malayalam-text {
+  font-family: "FML-TTAyilyamBold", sans-serif;
+  font-size: 70px;
+}
+.malayalam-text1 {
+  font-family: "FML-TTGopika", sans-serif;
+  font-weight: 700;
+}
+.malayalam-text2 {
+  font-family: "FML-TTJaya", sans-serif;
+  font-size: 25px;
+}
+.malayalam-text3 {
+  font-family: "FML-TTGopika", sans-serif;
+  font-size: 18px;
+}
+.malayalam-text4 {
+  font-family: "", sans-serif;
+}
+.report-body {
+  font-family: Arial, sans-serif;
+  width: 210mm;
+  height: 297mm;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.header img {
+  width: 150px;
+  height: auto;
+  margin-right: 0px;
+}
+.header .header-text {
+  text-align: center;
+  flex-grow: 1;
+}
+.header .header-text h2 {
+  margin: 0;
+  font-size: 70px;
+  height: 70px;
+}
+.header .header-text h4 {
+  margin: 5px 0;
+  font-size: 35px;
+}
+.header .header-text p {
+  margin: 5px 0;
+  font-size: 25px;
+}
+.header .header-text h5 {
+  margin: 5px 0;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: normal;
+}
+.details-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.details-item {
+  border: 1px solid #000;
+  padding: 10px;
+  margin: 5px;
+  width: calc(50% - 20px);
+  box-sizing: border-box;
+  font-size: 12px;
+  border-radius: 8px;
+}
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 15px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+th,
+td {
+  border: 1px solid #000;
+  padding: 6px;
+  text-align: left;
+  word-wrap: break-word;
+}
+th {
+  background-color: #f2f2f2;
+  font-weight: 100;
+}
+
+.footer-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+.footer-section .left-section {
+  flex: 1;
+}
+.footer-section .right-section {
+  flex: 1;
+  text-align: right;
+}
+.seal-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 14px;
+}
+.seal-section .date {
+  flex: 1;
+  text-align: left;
+}
+.seal-section .seal {
+  padding: 5px 20px;
+  text-align: center;
+  margin: 0 auto;
+  flex: 1;
+}
+.seal-section .empty {
+  flex: 1;
+}

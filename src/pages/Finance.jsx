@@ -1,6 +1,8 @@
+/* eslint-disable no-useless-escape */
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../axiosConfig"; // Adjust the import path as needed
-
+import malaylamText from "../assets/malayalamText";
+import logo from "../assets/cropped-eparchy_klpyEBM.png";
 const FamilyManagement = () => {
   const [familyHead, setFamilyHead] = useState("");
   const [foranes, setForanes] = useState([]);
@@ -20,8 +22,10 @@ const FamilyManagement = () => {
   const [displayRes, setDisplayRes] = useState(null);
   const [isTransaction, setIsTransaction] = useState(false);
   const [transactions, setTransactions] = useState([]);
+  const [currentTransactions, setCurrentTransactions] = useState([]);
   const [dropdown, setDropdown] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveButton, setSaveButton] = useState(false);
   const [transactionData, setTransactionData] = useState({
     type: "",
     amountPaid: "",
@@ -41,6 +45,10 @@ const FamilyManagement = () => {
     "brother",
     "sister",
   ];
+  const [report, setReport] = useState(false);
+  const [parishName, setParishName] = useState("");
+  const [familyName, setFamilyName] = useState("");
+  const [kootaymaName, setKootaymaName] = useState("");
   useEffect(() => {
     fetchForanes();
   }, []);
@@ -79,6 +87,28 @@ const FamilyManagement = () => {
       };
 
       fetchAllTransactions();
+      setSaved(false);
+    }
+  }, [persons, saved]);
+
+  useEffect(() => {
+    if (persons.length > 0 || saved) {
+      const fetchAllCurrentTransactions = async () => {
+        const allCurrentTransactions = await Promise.all(
+          persons.map(async (p) => {
+            const currentAmount = await currentPersonTransaction(p._id);
+            return {
+              amountPaid: currentAmount.amountPaid,
+              id: currentAmount._id,
+              person: p._id,
+            };
+          })
+        );
+        console.log(allCurrentTransactions);
+        setCurrentTransactions(allCurrentTransactions);
+      };
+
+      fetchAllCurrentTransactions();
     }
   }, [persons]);
 
@@ -207,20 +237,12 @@ const FamilyManagement = () => {
     setter(e.target.value);
   };
 
-  const handleTransactionChange = (e) => {
-    setTransactionData({
-      ...transactionData,
-      [e.target.name]: e.target.value,
-      forane: selectedForane,
-      parish: selectedParish,
-      family: selectedFamily,
-    });
-  };
-  const handleAddTransaction = async (current) => {
+  const handleNewTransaction = async (current) => {
     try {
       await axiosInstance.post(`transaction/`, current);
+      return true;
     } catch (error) {
-      console.error("Error adding transaction:", error);
+      return false;
     }
   };
 
@@ -229,9 +251,23 @@ const FamilyManagement = () => {
       const response = await axiosInstance.get(
         `transaction/person/${personId}`
       );
-      console.log(response.data);
       if (response.data.totalAmount) {
         return response.data.totalAmount;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      console.error("Error adding transaction:", error);
+    }
+  };
+
+  const currentPersonTransaction = async (personId) => {
+    try {
+      const response = await axiosInstance.get(
+        `transaction/latest/person/${personId}`
+      );
+      if (response.data) {
+        return response.data;
       } else {
         return 0;
       }
@@ -257,23 +293,50 @@ const FamilyManagement = () => {
     setFormData(personDetails);
     setIsEditing(!isEditing);
   };
-  const handleTransaction = () => {
-    currentTransaction.map((p) => {
-      handleAddTransaction({
-        amountPaid: p.amountPaid,
-        person: p.id,
-        forane: selectedForane,
-        family: selectedFamily,
-        parish: selectedParish,
-      });
-      fetchPersons(selectedFamily);
-      setSaved(true);
-    });
 
-    // setTransactionData({
-    //   person: personId,
-    // });
-    // setIsTransaction(!isTransaction);
+  const handleTransaction = async () => {
+    try {
+      setSaveButton(false);
+      // Map each transaction to a promise
+      const promises = currentTransactions.map((p) => {
+        return handleNewTransaction({
+          amountPaid: p.amountPaid,
+          person: p.person,
+          forane: selectedForane,
+          family: selectedFamily,
+          parish: selectedParish,
+        });
+      });
+
+      // Wait for all the promises to resolve
+      const results = await Promise.all(promises);
+
+      // Iterate over the results and handle based on canAdd value
+      results.forEach((canAdd, index) => {
+        console.log(currentTransactions[index], canAdd);
+
+        if (!canAdd) {
+          updateCurrentTransaction(currentTransactions[index]);
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    setSaved(true);
+  };
+  // setTransactionData({
+  //   person: personId,
+  // });
+  // setIsTransaction(!isTransaction);
+
+  const updateCurrentTransaction = async (p) => {
+    try {
+      await axiosInstance.put(`transaction/${p.id}`, {
+        amountPaid: p.amountPaid,
+      });
+    } catch (error) {
+      console.log("Error updating transaction", error);
+    }
   };
   const handleDelete = async (personId) => {
     if (window.confirm("Are you sure you want to delete this person?")) {
@@ -314,7 +377,6 @@ const FamilyManagement = () => {
 
   const handleSearchInputChange = (e) => {
     setSearchID(e.target.value);
-    console.log(searchID);
     if (searchID.length == 6) {
       setSelectedFamily(searchID);
       setDisplayRes(true);
@@ -323,8 +385,12 @@ const FamilyManagement = () => {
     }
   };
 
-  const handleCurrentChange = (e, personId) => {
+  const handleCurrentChange = (e, index, personId) => {
+    setSaveButton(true);
     let current = e.target.value;
+    const newValues = [...currentTransactions];
+    newValues[index].amountPaid = current;
+    setCurrentTransactions(newValues);
     if (!isNaN(current)) {
       setCurrentTransaction((prevTransaction) => {
         // Check if the personId already exists in the array
@@ -343,11 +409,51 @@ const FamilyManagement = () => {
         }
       });
     }
-    console.log(currentTransaction);
   };
-  return (
+
+  // Report Functions
+
+  const generateReport = () => {
+    console.log(persons);
+    setReport(true);
+    fetchParishName();
+    fetchFamilyName();
+    fetchKottaymaName();
+  };
+
+  const fetchParishName = async () => {
+    try {
+      const parish = await axiosInstance.get(`parish/${selectedParish}`);
+      console.log(parish);
+      setParishName(parish.data.name);
+    } catch (error) {
+      console.error("Error fetching parish name:", error);
+    }
+  };
+
+  const fetchFamilyName = async () => {
+    try {
+      const family = await axiosInstance.get(`family/${selectedFamily}`);
+      setFamilyName(family.data.name);
+    } catch (error) {
+      console.error("Error fetching family name", error);
+    }
+  };
+
+  const fetchKottaymaName = async () => {
+    try {
+      const koottayma = await axiosInstance.get(
+        `koottayma/${selectedKoottayma}`
+      );
+      console.log(koottayma);
+      setKootaymaName(koottayma.data.name);
+    } catch (error) {
+      console.error("Error fetching kootayma name", error);
+    }
+  };
+  return !report ? (
     <div className="container mx-auto flex flex-col items-center ">
-      <h1 className="text-3xl font-bold p-10">Family Finances</h1>
+      <h1 className="text-3xl font-bold">Family Finances</h1>
       <div className="min w-full flex justify-around">
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -441,13 +547,24 @@ const FamilyManagement = () => {
       </div>
       {selectedFamily && displayRes && (
         <div className="w-full flex flex-col items-center">
-          <h2 className="text-2xl font-bold mb-4">Persons in Family</h2>
+          <h2 className="text-2xl font-bold mb-4">Family Finances</h2>
           <button
-            className="bg-green-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
-            onClick={handleTransaction}
+            className="my-5 bg-blue-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
+            onClick={generateReport}
           >
-            Save
+            Generate Report
           </button>
+          <div className="flex flex-col items-center">
+            {saveButton && (
+              <button
+                className=" mb-5 bg-green-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
+                onClick={handleTransaction}
+              >
+                Save Changes
+              </button>
+            )}
+          </div>
+
           <table className="min-w-full bg-white border border-gray-300">
             <thead>
               <tr>
@@ -486,7 +603,10 @@ const FamilyManagement = () => {
                     <input
                       className="border border-black w-[50%] py-2 px-4"
                       type="number"
-                      onChange={(e) => handleCurrentChange(e, person._id)}
+                      value={currentTransactions[index].amountPaid}
+                      onChange={(e) =>
+                        handleCurrentChange(e, index, person._id)
+                      }
                     ></input>
                   </td>
                   <td className="py-2 border-b">
@@ -667,6 +787,210 @@ const FamilyManagement = () => {
           </form>
         </div>
       )}
+    </div>
+  ) : (
+    <div className="report-body">
+      <div className="header">
+        <img src={logo} alt="Logo" />
+        <div className="header-text">
+          <h2 className="malayalam-text">{malaylamText[0]}</h2>
+          <h4 className="malayalam-text1">{malaylamText[1]}</h4>
+          <p className="malayalam-text2">{malaylamText[2]}</p>
+          <h5 className="malayalam-text3">{malaylamText[3]}</h5>
+        </div>
+      </div>
+      <hr style={{ margin: "0px" }} />
+      <hr style={{ marginTop: "0px" }} />
+      <div className="details-container">
+        <div className="details-item">
+          <strong className="malayalam-text3">{malaylamText[4]}</strong>
+          <strong>{parishName}</strong>
+        </div>
+        <div className="details-item">
+          <strong className="malayalam-text3">{malaylamText[5]}</strong>
+          <strong>{familyName}</strong>
+        </div>
+        <div className="details-item">
+          <strong className="malayalam-text3"> {malaylamText[6]} :</strong>
+          <strong>{familyHead}</strong>
+        </div>
+        <div className="details-item">
+          <strong className="malayalam-text3">{malaylamText[7]} :</strong>
+          <strong>{kootaymaName}</strong>
+        </div>
+        <div className="details-item">
+          <strong className="malayalam-text3">{malaylamText[8]}</strong>{" "}
+          <strong>CHERUVALLY, 686 543</strong>
+        </div>
+        <div className="details-item">
+          <strong className="malayalam-text3">{malaylamText[9]}</strong>
+          <strong> 9497321477</strong>
+        </div>
+      </div>
+
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+                {malaylamText[10]}
+              </th>
+              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+                {malaylamText[11]}
+              </th>
+              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+                {malaylamText[12]}
+              </th>
+              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+                {malaylamText[13]}
+              </th>
+              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+                {malaylamText[14]}
+              </th>
+              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+                {malaylamText[15]}
+              </th>
+              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+                {malaylamText[16]}
+              </th>
+              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+                {malaylamText[17]}
+              </th>
+              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+                {malaylamText[18]}
+              </th>
+              <th className="malayalam-text3" style={{ fontSize: "15px" }}>
+                {malaylamText[19]}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>ALEY</td>
+              <td>ELSAMMA</td>
+              <td style={{ fontSize: "10px" }}>FAMILY HEAD</td>
+              <td>F</td>
+              <td>07-06-1944</td>
+              <td>RTD TEACHER</td>
+              <td>B.A, B.ED</td>
+              <td>3345</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>STANSLAVUS</td>
+              <td>FR. STANLY</td>
+              <td>SON</td>
+              <td>M</td>
+              <td>30-11-1983</td>
+              <td>PRIEST</td>
+              <td>B.A</td>
+              <td>585</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>ABRAHAM</td>
+              <td>ABY</td>
+              <td>SON</td>
+              <td>M</td>
+              <td>06-03-1986</td>
+              <td></td>
+              <td></td>
+              <td>1770</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>MARY</td>
+              <td>REMYA</td>
+              <td>DAUGHTER IN LAW</td>
+              <td>F</td>
+              <td>07-03-1989</td>
+              <td></td>
+              <td></td>
+              <td>400</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>EAPEN</td>
+              <td>EAPEN</td>
+              <td>GRAND SON</td>
+              <td>M</td>
+              <td>29-06-2019</td>
+              <td></td>
+              <td></td>
+              <td>200</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td> </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td> </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td> </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td colspan="9" style={{ textAlign: "right" }}>
+                <strong>TOTAL</strong>
+              </td>
+              <td>6300</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style={{ border: "1px solid #000", borderRadius: "8px" }}>
+        <div className="footer-section">
+          <div className="left-section">
+            <span>
+              <strong className="malayalam-text3">{malaylamText[20]}</strong>
+            </span>
+          </div>
+          <div className="right-section">
+            <span>
+              <strong className="malayalam-text3">{malaylamText[21]}</strong>
+            </span>
+          </div>
+        </div>
+
+        <div className="seal-section" style={{ paddingTop: "20px" }}>
+          <span className="date malayalam-text3">{malaylamText[22]}</span>
+          <span className="seal malayalam-text3">{malaylamText[23]}</span>
+          <span className="empty"></span>
+        </div>
+      </div>
     </div>
   );
 };

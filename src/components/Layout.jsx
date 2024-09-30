@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 const Layout = () => {
   const [dash, setDash] = useState(false);
   const location = useLocation();
@@ -13,7 +14,7 @@ const Layout = () => {
     }
   }, [location.pathname]); // This effect runs every time the path changes
   return (
-    <div className="flex h-screen ">
+    <div className="flex h-screen bg-gray-50 ">
       {/* <aside
         className={
           dash
@@ -58,7 +59,7 @@ const Layout = () => {
           </ul>
         </nav>
       </aside> */}
-      <main className="flex-1 p-10">
+      <main className="flex-1 ">
         <Outlet />
       </main>
     </div>

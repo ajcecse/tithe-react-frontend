@@ -1,8 +1,12 @@
 /* eslint-disable no-useless-escape */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "../axiosConfig"; // Adjust the import path as needed
 import malaylamText from "../assets/malayalamText";
+import { IoMdArrowBack } from "react-icons/io";
+import { MdLocalPrintshop } from "react-icons/md";
+import { FaFilePdf } from "react-icons/fa";
 import logo from "../assets/cropped-eparchy_klpyEBM.png";
+import html2pdf from "html2pdf.js";
 const FamilyManagement = () => {
   const [familyHead, setFamilyHead] = useState("");
   const [foranes, setForanes] = useState([]);
@@ -50,6 +54,7 @@ const FamilyManagement = () => {
   const [familyName, setFamilyName] = useState("");
   const [kootaymaName, setKootaymaName] = useState("");
   const [familyTotal, setFamilyTotal] = useState(0);
+  const [print, setPrint] = useState(false);
   useEffect(() => {
     fetchForanes();
   }, []);
@@ -464,6 +469,23 @@ const FamilyManagement = () => {
     setFamilyTotal(calFamilyTotal);
   };
 
+  const handlePrint = () => {
+    window.print(); // This will open the print dialog for the user
+  };
+  const pageRef = useRef();
+  const handleGeneratePDF = () => {
+    setPrint(true);
+    const element = pageRef.current; // Get the DOM element to print
+    html2pdf()
+      .from(element)
+      .set({
+        margin: 1,
+        filename: "page-content.pdf",
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: "portrait" },
+      })
+      .save(); // Save the PDF
+  };
   return !report ? (
     <div className="container mx-auto flex flex-col items-center ">
       <h1 className="text-3xl font-bold">Family Finances</h1>
@@ -802,7 +824,32 @@ const FamilyManagement = () => {
       )}
     </div>
   ) : (
-    <div className="report-body">
+    <div ref={pageRef} className="report-body">
+      {!print && (
+        <div className="hide-in-print flex items-center text-[1.7rem] justify-center">
+          <button
+            className="my-5 bg-blue-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2 flex items-center gap-3"
+            onClick={() => setReport(!report)}
+          >
+            <IoMdArrowBack />
+            <h1>Go Back to Edit</h1>
+          </button>
+          <button
+            className="my-5 bg-blue-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2 flex items-center gap-3"
+            onClick={handlePrint}
+          >
+            <MdLocalPrintshop />
+            <h1>Print</h1>
+          </button>
+          {/* <button
+            className="my-5 bg-blue-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2 flex items-center gap-3"
+            onClick={handleGeneratePDF}
+          >
+            <FaFilePdf />
+            <h1>Generate PDF</h1>
+          </button> */}
+        </div>
+      )}
       <div className="header">
         <img src={logo} alt="Logo" />
         <div className="header-text">
@@ -810,6 +857,7 @@ const FamilyManagement = () => {
           <h4 className="malayalam-text1">{malaylamText[1]}</h4>
           <p className="malayalam-text2">{malaylamText[2]}</p>
           <h5 className="malayalam-text3">{malaylamText[3]}</h5>
+          <h1>Family ID:{familyName.id}</h1>
         </div>
       </div>
       <hr style={{ margin: "0px" }} />
@@ -937,9 +985,7 @@ const FamilyManagement = () => {
                 <td className="py-3 px-2 text-[0.75rem] report-td ">
                   <p>{transactions[index]}</p>
                 </td>
-                <td className="py-3 px-2 text-[0.75rem] report-td">
-                  {currentTransactions[index].amountPaid}
-                </td>
+                <td className="py-3 px-2 text-[0.75rem] report-td"></td>
               </tr>
             ))}
             <tr>

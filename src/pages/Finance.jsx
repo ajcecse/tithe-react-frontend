@@ -991,12 +991,15 @@ const FamilyManagement = () => {
             <tr>
               <td
                 className="report-td"
-                colSpan="9"
+                colSpan="8"
                 style={{ textAlign: "right" }}
               >
                 <strong>TOTAL</strong>
               </td>
-              <td className="report-td">{familyTotal}</td>
+              <td className="report-td py-3 px-2 text-[0.75rem]">
+                {familyTotal}
+              </td>
+              <td className="report-td"></td>
             </tr>
           </tbody>
         </table>

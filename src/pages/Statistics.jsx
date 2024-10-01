@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../axiosConfig";
 import StatBasicUnit from "../components/StatBasicUnit";
+import { PieChart } from "@mui/x-charts/PieChart";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { axisClasses } from "@mui/x-charts/ChartsAxis";
+import { dataset, valueFormatter } from "../assets/dataset";
 import { FaCross } from "react-icons/fa";
 import { FaChurch } from "react-icons/fa6";
 import { MdFamilyRestroom } from "react-icons/md";
@@ -13,7 +17,20 @@ const Statistics = () => {
   const [koottaymaCount, setKoottaymaCount] = useState(0);
   const [familyCount, setFamilyCount] = useState(0);
   const [personCount, setPersonCount] = useState(0);
-
+  const chartSetting = {
+    yAxis: [
+      {
+        label: "rainfall (mm)",
+      },
+    ],
+    width: 1000,
+    height: 300,
+    sx: {
+      [`.${axisClasses.left} .${axisClasses.label}`]: {
+        transform: "translate(-20px, 0)",
+      },
+    },
+  };
   useEffect(() => {
     fetchForanes();
   }, []);
@@ -110,7 +127,12 @@ const Statistics = () => {
     };
     fetchStats();
   }, []);
-
+  const palettes = [
+    ["lightcoral", "slateblue"],
+    ["blue", "green", "lightblue"],
+    ["Aquamarine", "DarkCyan", "CadetBlue"],
+    ["Cyan", "DeepPink"],
+  ];
   return (
     <div className="bg-gray-50 p-10 flex flex-col items-center">
       <h1 className="text-[2rem] font-bold">Overview</h1>
@@ -128,6 +150,93 @@ const Statistics = () => {
           Icon={MdFamilyRestroom}
         />
         <StatBasicUnit unit="Persons" number={personCount} Icon={FaPerson} />
+      </div>
+      <div className="flex flex-col items-center gap-5">
+        <h1 className="text-[1.5rem]">Population Statistics</h1>
+        <div className="flex">
+          <PieChart
+            colors={palettes[0]}
+            series={[
+              {
+                data: [
+                  { id: 0, value: 10, label: "Men" },
+                  { id: 1, value: 15, label: "Women" },
+                ],
+              },
+            ]}
+            width={350}
+            height={200}
+          />
+          <PieChart
+            colors={palettes[1]}
+            series={[
+              {
+                data: [
+                  { id: 0, value: 10, label: "1-18 Yrs" },
+                  { id: 1, value: 15, label: "19-35 Yrs" },
+                  { id: 2, value: 30, label: "36-50 Yrs" },
+                ],
+              },
+            ]}
+            width={350}
+            height={200}
+          />
+          <PieChart
+            colors={palettes[2]}
+            series={[
+              {
+                data: [
+                  { id: 0, value: 30, label: "10 Pass" },
+                  { id: 1, value: 25, label: "12 Pass" },
+                  { id: 2, value: 10, label: "Degree" },
+                ],
+              },
+            ]}
+            width={350}
+            height={200}
+          />
+          <PieChart
+            colors={palettes[3]}
+            series={[
+              {
+                data: [
+                  { id: 0, value: 80, label: "Single" },
+                  { id: 1, value: 45, label: "Married" },
+                ],
+              },
+            ]}
+            width={350}
+            height={200}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col items-center gap-5 pt-5">
+        <h1 className="text-[1.5rem]">Financial Statistics</h1>
+        <div className="flex">
+          <BarChart
+            dataset={dataset}
+            xAxis={[{ scaleType: "band", dataKey: "month" }]}
+            series={[
+              {
+                dataKey: "london",
+                label: "Ponkunnam Holy Family",
+                valueFormatter,
+              },
+              { dataKey: "paris", label: "Ranni Infant Jesus", valueFormatter },
+              {
+                dataKey: "newYork",
+                label: "Upputhara St. Mary",
+                valueFormatter,
+              },
+              {
+                dataKey: "seoul",
+                label: "Velichiyani St. Thomas",
+                valueFormatter,
+              },
+            ]}
+            {...chartSetting}
+          />
+        </div>
       </div>
     </div>
   );

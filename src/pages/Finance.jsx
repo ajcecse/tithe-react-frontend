@@ -26,7 +26,9 @@ const FamilyManagement = () => {
   const [displayRes, setDisplayRes] = useState(null);
   const [isTransaction, setIsTransaction] = useState(false);
   const [transactions, setTransactions] = useState([]);
-  const [currentTransactions, setCurrentTransactions] = useState([]);
+  const [currentTransactions, setCurrentTransactions] = useState([
+    { amountPaid: 0 },
+  ]);
   const [dropdown, setDropdown] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveButton, setSaveButton] = useState(false);
@@ -77,6 +79,7 @@ const FamilyManagement = () => {
       // const prev = totalPersonTransaction():
       setCurrentTransaction([]);
       setDisplayRes(true);
+      fetchPersons(selectedFamily);
     }
   }, [selectedFamily]);
 
@@ -383,6 +386,7 @@ const FamilyManagement = () => {
 
   const handleSearchInputChange = (e) => {
     setSearchID(e.target.value);
+    console.log(searchID);
     if (searchID.length == 6) {
       setSelectedFamily(searchID);
       setDisplayRes(true);
@@ -487,28 +491,28 @@ const FamilyManagement = () => {
       .save(); // Save the PDF
   };
   return !report ? (
-    <div className="container mx-auto flex flex-col items-center ">
-      <h1 className="text-3xl font-bold">Family Finances</h1>
-      <div className="min w-full flex justify-around">
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Select Forane
-          </label>
-          <select
-            className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            value={selectedForane}
-            onChange={handleSelectChange(setSelectedForane)}
-          >
-            <option value="">Select a Forane</option>
-            {foranes.map((forane) => (
-              <option key={forane._id} value={forane._id}>
-                {forane.name}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="container mx-auto flex flex-col items-center p-10 ">
+      <h1 className="text-3xl font-bold py-5">Family Finances</h1>
+      <div className="min w-full flex flex-col items-center justify-around">
+        <div className="flex justify-around w-full">
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select Forane
+            </label>
+            <select
+              className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={selectedForane}
+              onChange={handleSelectChange(setSelectedForane)}
+            >
+              <option value="">Select a Forane</option>
+              {foranes.map((forane) => (
+                <option key={forane._id} value={forane._id}>
+                  {forane.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {selectedForane && (
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Select Parish
@@ -526,9 +530,7 @@ const FamilyManagement = () => {
               ))}
             </select>
           </div>
-        )}
 
-        {selectedParish && (
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Select Koottayma
@@ -546,9 +548,7 @@ const FamilyManagement = () => {
               ))}
             </select>
           </div>
-        )}
 
-        {selectedKoottayma && (
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Select Family
@@ -566,7 +566,7 @@ const FamilyManagement = () => {
               ))}
             </select>
           </div>
-        )}
+        </div>
         <div>
           <label className="block text-gray-700 text-md font-bold mb-2">
             Enter Famliy ID and click SPACE
@@ -582,7 +582,7 @@ const FamilyManagement = () => {
       </div>
       {selectedFamily && displayRes && (
         <div className="w-full flex flex-col items-center">
-          <h2 className="text-2xl font-bold mb-4">Family Finances</h2>
+          <h2 className="text-2xl font-bold mb-4 py-5">Family Finances</h2>
           <button
             className="my-5 bg-blue-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
             onClick={generateReport}

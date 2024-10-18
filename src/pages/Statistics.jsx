@@ -20,14 +20,14 @@ const Statistics = () => {
   const chartSetting = {
     yAxis: [
       {
-        label: "rainfall (mm)",
+        label: "Credit (mm)",
       },
     ],
-    width: 1000,
-    height: 300,
+    width: 1500,
+    height: 400,
     sx: {
       [`.${axisClasses.left} .${axisClasses.label}`]: {
-        transform: "translate(-20px, 0)",
+        transform: "translate(-10px, 0)",
       },
     },
   };
@@ -135,7 +135,7 @@ const Statistics = () => {
   ];
   return (
     <div className="bg-gray-50 p-10 flex flex-col items-center">
-      <h1 className="text-[2rem] font-bold">Overview</h1>
+      <h1 className="text-[2rem] font-bold fadedown">Overview</h1>
       <div className="flex gap-[5rem] p-5">
         <StatBasicUnit unit="Foranes" number={foranes.length} Icon={FaCross} />
         <StatBasicUnit unit="Parishes" number={parishCount} Icon={FaChurch} />
@@ -151,9 +151,9 @@ const Statistics = () => {
         />
         <StatBasicUnit unit="Persons" number={personCount} Icon={FaPerson} />
       </div>
-      <div className="flex flex-col items-center gap-5">
-        <h1 className="text-[1.5rem]">Population Statistics</h1>
-        <div className="flex">
+      <div className="flex flex-col items-center gap-5 py-10">
+        <h1 className="text-[1.5rem] fadedown">Population Statistics</h1>
+        <div className="flex fadedown">
           <PieChart
             colors={palettes[0]}
             series={[
@@ -219,18 +219,18 @@ const Statistics = () => {
             series={[
               {
                 dataKey: "london",
-                label: "Ponkunnam Holy Family",
+                label: "Ponkunnam",
                 valueFormatter,
               },
-              { dataKey: "paris", label: "Ranni Infant Jesus", valueFormatter },
+              { dataKey: "paris", label: "Ranni ", valueFormatter },
               {
                 dataKey: "newYork",
-                label: "Upputhara St. Mary",
+                label: "Upputhara ",
                 valueFormatter,
               },
               {
                 dataKey: "seoul",
-                label: "Velichiyani St. Thomas",
+                label: "Velichiyani ",
                 valueFormatter,
               },
             ]}

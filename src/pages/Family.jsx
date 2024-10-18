@@ -406,8 +406,6 @@ const Family = () => {
         <thead>
           <tr>
             <th className="py-2 px-4 border-b">Name</th>
-            <th className="py-2 px-4 border-b">Phone</th>
-            <th className="py-2 px-4 border-b">City</th>
             <th className="py-2 px-4 border-b">Actions</th>
           </tr>
         </thead>
@@ -415,8 +413,8 @@ const Family = () => {
           {families.map((family) => (
             <tr key={family._id}>
               <td className="py-2 px-4 border-b">{family.name}</td>
-              <td className="py-2 px-4 border-b">{family.phone}</td>
-              <td className="py-2 px-4 border-b">{family.city}</td>
+              {/* <td className="py-2 px-4 border-b">{family.phone}</td>
+              <td className="py-2 px-4 border-b">{family.city}</td> */}
               <td className="py-2 px-4 border-b">
                 <button
                   className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2"

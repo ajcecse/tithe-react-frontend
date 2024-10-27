@@ -12,6 +12,7 @@ import MovePerson from "./pages/movePerson.jsx";
 import Report from "./pages/Report.jsx";
 import Statistics from "./pages/Statistics.jsx";
 import FinanceSettings from "./pages/FinanceSettings.jsx";
+import CommunitySettings from "./pages/CommunitySettings.jsx";
 // import Settings from "./pages/Settings";
 
 function App() {
@@ -31,6 +32,10 @@ function App() {
           <Route path="report" element={<Report />} />
           <Route path="statistics" element={<Statistics />} />
           <Route path="financesettings" element={<FinanceSettings />} />
+          <Route
+            path="financesettings/community"
+            element={<CommunitySettings />}
+          />
         </Route>
       </Routes>
     </Router>

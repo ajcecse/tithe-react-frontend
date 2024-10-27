@@ -14,7 +14,7 @@ const Layout = () => {
     }
   }, [location.pathname]); // This effect runs every time the path changes
   return (
-    <div className="flex h-screen bg-gray-50 ">
+    <div className="flex  bg-gray-50 ">
       {/* <aside
         className={
           dash

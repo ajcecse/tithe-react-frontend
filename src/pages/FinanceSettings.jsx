@@ -19,7 +19,7 @@ const FinanceSettings = () => {
 
       {/* Buttons Section */}
       <div className="flex gap-[5rem] justify-center">
-        <Button Icon={FaPeopleRoof} title="Communities" link="forane" />
+        <Button Icon={FaPeopleRoof} title="Communities" link="community" />
         <Button Icon={FaChurch} title="Parishes" link="forane" />
         {/* <p className="absolute text-xs text-blue-600 top-1 right-2 italic">
             if Community allocated only then buttons clearly visible

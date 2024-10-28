@@ -13,6 +13,7 @@ import Report from "./pages/Report.jsx";
 import Statistics from "./pages/Statistics.jsx";
 import FinanceSettings from "./pages/FinanceSettings.jsx";
 import CommunitySettings from "./pages/CommunitySettings.jsx";
+import OtherFundSettings from "./pages/OtherFundSettings.jsx";
 // import Settings from "./pages/Settings";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
             path="financesettings/community"
             element={<CommunitySettings />}
           />
+          <Route path="financesettings/other" element={<OtherFundSettings />} />
         </Route>
       </Routes>
     </Router>

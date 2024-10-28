@@ -24,7 +24,7 @@ const FinanceSettings = () => {
         {/* <p className="absolute text-xs text-blue-600 top-1 right-2 italic">
             if Community allocated only then buttons clearly visible
           </p> */}
-        <Button Icon={FaPeopleCarry} title="Other Projects" link="forane" />
+        <Button Icon={FaPeopleCarry} title="Other Projects" link="other" />
       </div>
 
       {/* Total Collection Section */}

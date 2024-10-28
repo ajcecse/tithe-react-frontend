@@ -3,8 +3,13 @@ import { FaPeopleRoof } from "react-icons/fa6";
 import axiosInstance from "../axiosConfig.jsx"; // Import your axios instance
 
 const settingsData = [
-  { name: "SMYM", percent: 0, amountAllocated: 0 },
-  { name: "Mathurvedi", percent: 0, amountAllocated: 0 },
+  { name: "SMYM", percent: 0, amountAllocated: 0, head: "John Jacobs" },
+  {
+    name: "Mathurvedi",
+    percent: 0,
+    amountAllocated: 0,
+    head: "Mathew Abraham",
+  },
 ];
 const totalAmount = 100000;
 
@@ -205,37 +210,17 @@ const CommunitySettings = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-lg">Percentage</label>
+              <label className="block text-lg">Community Head</label>
               <input
-                type="number"
+                type="text"
                 className="border-2 w-full p-2 rounded-lg"
-                value={newCommunity.percent}
+                value={newCommunity.head}
                 onChange={(e) =>
-                  setNewCommunity({
-                    ...newCommunity,
-                    percent: parseFloat(e.target.value) || 0,
-                    amountAllocated:
-                      (totalAmount * parseFloat(e.target.value)) / 100 || 0,
-                  })
+                  setNewCommunity({ ...newCommunity, head: e.target.value })
                 }
               />
             </div>
-            <div className="mb-4">
-              <label className="block text-lg">Allocated Amount</label>
-              <input
-                type="number"
-                className="border-2 w-full p-2 rounded-lg"
-                value={newCommunity.amountAllocated}
-                onChange={(e) =>
-                  setNewCommunity({
-                    ...newCommunity,
-                    amountAllocated: parseFloat(e.target.value) || 0,
-                    percent:
-                      (parseFloat(e.target.value) / totalAmount) * 100 || 0,
-                  })
-                }
-              />
-            </div>
+
             <button
               onClick={handleAddCommunity}
               className="mt-2 p-3 bg-green-500 text-white rounded-lg"

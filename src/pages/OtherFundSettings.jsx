@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaPeopleCarry } from "react-icons/fa";
 import axiosInstance from "../axiosConfig.jsx"; // Import your axios instance
+import { useNavigate } from "react-router-dom";
 
 const settingsData = [
   { name: "Bishop Fund", percent: 0, amountAllocated: 0, head: "John Jacobs" },
@@ -14,6 +15,7 @@ const settingsData = [
 const totalAmount = 100000;
 
 const OtherFundSettings = () => {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState(
     settingsData.map((project) => ({
       ...project,
@@ -79,9 +81,11 @@ const OtherFundSettings = () => {
   // Function to handle save button click, which sends a POST request
   const handleSave = async () => {
     try {
-      await axiosInstance.post("/otherprojectsettings", projects);
+      // await axiosInstance.post("/otherprojectsettings", projects);
       alert("Other Projects settings saved successfully!");
-      setShowSaveButton(false); // Hide save button after saving
+      setShowSaveButton(false);
+      navigate(-1);
+      // Hide save button after saving
     } catch (error) {
       console.error("Error saving community settings:", error);
     }
@@ -197,9 +201,9 @@ const OtherFundSettings = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="bg-white p-5 rounded-lg w-1/3">
-            <h2 className="text-2xl font-bold mb-4">Add New Community</h2>
+            <h2 className="text-2xl font-bold mb-4">Add New Project</h2>
             <div className="mb-4">
-              <label className="block text-lg">Community Name</label>
+              <label className="block text-lg">Project Name</label>
               <input
                 type="text"
                 className="border-2 w-full p-2 rounded-lg"
@@ -210,7 +214,7 @@ const OtherFundSettings = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-lg">Community Head</label>
+              <label className="block text-lg">Project Head</label>
               <input
                 type="text"
                 className="border-2 w-full p-2 rounded-lg"

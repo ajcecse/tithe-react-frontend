@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaPeopleRoof } from "react-icons/fa6";
 import axiosInstance from "../axiosConfig.jsx"; // Import your axios instance
+import { useNavigate } from "react-router-dom";
 
 const settingsData = [
   { name: "SMYM", percent: 0, amountAllocated: 0, head: "John Jacobs" },
@@ -14,6 +15,7 @@ const settingsData = [
 const totalAmount = 100000;
 
 const CommunitySettings = () => {
+  const navigate = useNavigate();
   const [communities, setCommunities] = useState(
     settingsData.map((community) => ({
       ...community,
@@ -79,12 +81,15 @@ const CommunitySettings = () => {
   // Function to handle save button click, which sends a POST request
   const handleSave = async () => {
     try {
-      await axiosInstance.post("/communitysettings", communities);
+      // await axiosInstance.post("/communitysettings", communities);
       alert("Community settings saved successfully!");
-      setShowSaveButton(false); // Hide save button after saving
+      setShowSaveButton(false);
+      navigate(-1);
+      // Hide save button after saving
     } catch (error) {
       console.error("Error saving community settings:", error);
     }
+    return redirect("/financesettings");
   };
   const handleAddCommunity = () => {
     setCommunities((prevCommunities) => {

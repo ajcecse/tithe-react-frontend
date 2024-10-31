@@ -10,6 +10,7 @@ import { FaPerson } from "react-icons/fa6";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { FaMoneyBillWave } from "react-icons/fa6";
 import { FaArrowRightArrowLeft } from "react-icons/fa6";
+import { FaGears } from "react-icons/fa6";
 const Dashboard = () => {
   return (
     <div className="flex flex-col items-center p-5">
@@ -30,6 +31,19 @@ const Dashboard = () => {
                   <FaMoneyBillWave />
                 </div>
                 <h1 className="text-[1.3rem] font-regular">Family Finance</h1>
+              </div>
+            </Link>
+          </div>
+          <div className="bg-white p-5 rounded shadow w-[50%] flex justify-center fadeup">
+            <Link
+              to="/financesettings"
+              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
+              <div className="flex flex-col gap-5 items-center">
+                <div className="flex gap-3 text-[2rem]">
+                  <FaGears />
+                </div>
+                <h1 className="text-[1.3rem] font-regular">Finance Setting</h1>
               </div>
             </Link>
           </div>

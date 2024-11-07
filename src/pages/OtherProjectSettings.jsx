@@ -3,40 +3,25 @@ import { FaPeopleCarry } from "react-icons/fa";
 import axiosInstance from "../axiosConfig.jsx"; // Import your axios instance
 import { useNavigate } from "react-router-dom";
 
-const settingsData = [
-  { name: "Bishop Fund", percent: 0, amountAllocated: 0, head: "John Jacobs" },
-  {
-    name: "Youth Mission",
-    percent: 0,
-    amountAllocated: 0,
-    head: "Mathew Abraham",
-  },
-];
 const totalAmount = 100000;
 
-const OtherFundSettings = () => {
+const OtherProjectSettings = () => {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState(
-    settingsData.map((project) => ({
-      ...project,
-      balanceAfterAllocation: totalAmount,
-    }))
-  );
+  const [projects, setProjects] = useState([]);
   const [showSaveButton, setShowSaveButton] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newProject, setNewProject] = useState({
     name: "",
-    percent: 0,
-    amountAllocated: 0,
   }); // State to show Save button
   useEffect(() => {
-    fetchFunds();
+    fetchProjects();
   }, []);
   //Function to fetch communities
-  const fetchFunds = async () => {
+  const fetchProjects = async () => {
     try {
       const response = await axiosInstance.get("/fund/");
-      console.log("Funds fetched successfully:", response.data);
+      console.log("Communities fetched successfully:", response.data);
+      setProjects(response.data);
       // Process the data as needed
     } catch (error) {
       console.error(
@@ -121,7 +106,7 @@ const OtherFundSettings = () => {
   return (
     <div className="w-full flex flex-col items-center p-[5rem]">
       <FaPeopleCarry className="text-[4rem]" />
-      <h1 className="text-[2.5rem] font-bold mb-2">Other Fund Settings</h1>
+      <h1 className="text-[2.5rem] font-bold mb-2">Other Project Settings</h1>
       <div className="flex flex-col items-center">
         <div className="flex gap-[10rem] w-full p-5">
           <div className="flex gap-[3rem] text-[1.5rem]">
@@ -207,10 +192,10 @@ const OtherFundSettings = () => {
           </tbody>
         </table>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => navigate("/projects")}
           className="mt-5 p-3 bg-green-500 text-white rounded-lg"
         >
-          Add Project
+          Manage Projects
         </button>
       </div>
       {/* Modal */}
@@ -260,4 +245,4 @@ const OtherFundSettings = () => {
   );
 };
 
-export default OtherFundSettings;
+export default OtherProjectSettings;

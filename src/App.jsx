@@ -13,9 +13,10 @@ import Report from "./pages/Report.jsx";
 import Statistics from "./pages/Statistics.jsx";
 import FinanceSettings from "./pages/FinanceSettings.jsx";
 import CommunitySettings from "./pages/CommunitySettings.jsx";
-import OtherFundSettings from "./pages/OtherFundSettings.jsx";
+import OtherProjectSettings from "./pages/OtherProjectSettings.jsx";
 import ParishSettings from "./pages/ParishSettings.jsx";
 import CommunityManagement from "./pages/Community.jsx";
+import ProjectManagement from "./pages/ProjectManagement.jsx";
 // import Settings from "./pages/Settings";
 
 function App() {
@@ -39,9 +40,13 @@ function App() {
             path="financesettings/community"
             element={<CommunitySettings />}
           />
-          <Route path="financesettings/other" element={<OtherFundSettings />} />
+          <Route
+            path="financesettings/other"
+            element={<OtherProjectSettings />}
+          />
           <Route path="financesettings/parish" element={<ParishSettings />} />
           <Route path="community" element={<CommunityManagement />} />
+          <Route path="projects" element={<ProjectManagement />} />
         </Route>
       </Routes>
     </Router>

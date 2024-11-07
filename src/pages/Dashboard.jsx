@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axiosInstance from "../axiosConfig"; // Update the path as necessary
+import React, { useState, useEffect } from "react"; // Update the path as necessary
 import { Link } from "react-router-dom";
 import logo from "../assets/cropped-eparchy_klpyEBM.png";
 import { ImStatsDots } from "react-icons/im";
@@ -12,6 +11,7 @@ import { FaMoneyBillWave } from "react-icons/fa6";
 import { FaArrowRightArrowLeft } from "react-icons/fa6";
 import { FaGears } from "react-icons/fa6";
 import { FaPeopleRoof } from "react-icons/fa6";
+import { FaPeopleCarry } from "react-icons/fa";
 
 const Dashboard = () => {
   return (
@@ -75,6 +75,21 @@ const Dashboard = () => {
                 </div>
                 <h1 className="text-[1.3rem] font-regular">
                   Create/Manage Communities
+                </h1>
+              </div>
+            </Link>
+          </div>
+          <div className="bg-white p-5 rounded shadow w-[50%] flex justify-center fadeup">
+            <Link
+              to="/projects"
+              className="flex items-center gap-5 font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
+              <div className="flex flex-col gap-5 items-center">
+                <div className="flex gap-3 text-[2rem]">
+                  <FaPeopleCarry />{" "}
+                </div>
+                <h1 className="text-[1.3rem] font-regular">
+                  Create/Manage Other Projects
                 </h1>
               </div>
             </Link>

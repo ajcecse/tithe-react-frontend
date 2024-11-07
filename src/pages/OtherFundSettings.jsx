@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaPeopleCarry } from "react-icons/fa";
 import axiosInstance from "../axiosConfig.jsx"; // Import your axios instance
 import { useNavigate } from "react-router-dom";
@@ -29,6 +29,22 @@ const OtherFundSettings = () => {
     percent: 0,
     amountAllocated: 0,
   }); // State to show Save button
+  useEffect(() => {
+    fetchFunds();
+  }, []);
+  //Function to fetch communities
+  const fetchFunds = async () => {
+    try {
+      const response = await axiosInstance.get("/fund/");
+      console.log("Funds fetched successfully:", response.data);
+      // Process the data as needed
+    } catch (error) {
+      console.error(
+        "Error fetching data:",
+        error.response?.data || error.message
+      );
+    }
+  };
 
   // Function to calculate cumulative balance after each allocation
   const updateBalances = (updatedProjects) => {

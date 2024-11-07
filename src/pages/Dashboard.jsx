@@ -11,6 +11,8 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { FaMoneyBillWave } from "react-icons/fa6";
 import { FaArrowRightArrowLeft } from "react-icons/fa6";
 import { FaGears } from "react-icons/fa6";
+import { FaPeopleRoof } from "react-icons/fa6";
+
 const Dashboard = () => {
   return (
     <div className="flex flex-col items-center p-5">
@@ -59,6 +61,21 @@ const Dashboard = () => {
                 </div>
 
                 <h1 className="text-[1.3rem] font-regular">Statistics</h1>
+              </div>
+            </Link>
+          </div>
+          <div className="bg-white p-5 rounded shadow w-[50%] flex justify-center fadeup">
+            <Link
+              to="/community"
+              className="flex items-center gap-5 font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
+            >
+              <div className="flex flex-col gap-5 items-center">
+                <div className="flex gap-3 text-[2rem]">
+                  <FaPeopleRoof />{" "}
+                </div>
+                <h1 className="text-[1.3rem] font-regular">
+                  Create/Manage Communities
+                </h1>
               </div>
             </Link>
           </div>

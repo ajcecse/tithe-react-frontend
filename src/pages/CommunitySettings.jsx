@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaPeopleRoof } from "react-icons/fa6";
 import axiosInstance from "../axiosConfig.jsx"; // Import your axios instance
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 
 const settingsData = [
   { name: "SMYM", percent: 0, amountAllocated: 0, head: "John Jacobs" },
@@ -18,18 +18,6 @@ const CommunitySettings = () => {
   const navigate = useNavigate();
   const [communities, setCommunities] = useState([]);
   const [showSaveButton, setShowSaveButton] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newCommunity, setNewCommunity] = useState({
-    name: "",
-    phone: "",
-    headOfCommunity: {
-      fullName: "",
-      email: "",
-      phoneNumber: "",
-    },
-    percent: 0,
-    amountAllocated: 0,
-  }); // State to show Save button
 
   useEffect(() => {
     fetchCommunities();
@@ -109,36 +97,6 @@ const CommunitySettings = () => {
     }
     return redirect("/financesettings");
   };
-  const handleAddCommunity = async () => {
-    try {
-      await axiosInstance.post("/community/", newCommunity);
-    } catch (error) {
-      console.error(
-        "Error saving community settings:",
-        error.response?.data || error.message
-      );
-    }
-    setCommunities((prevCommunities) => {
-      const updatedCommunities = [
-        ...prevCommunities,
-        { ...newCommunity, balanceAfterAllocation: totalAmount },
-      ];
-      return updateBalances(updatedCommunities);
-    });
-    setIsModalOpen(false); // Close the modal after adding
-    setNewCommunity({
-      name: "",
-      phone: "",
-      headOfCommunity: {
-        fullName: "",
-        email: "",
-        phoneNumber: "",
-      },
-      percent: 0,
-      amountAllocated: 0,
-    }); // Reset form fields
-  };
-
   return (
     <div className="w-full flex flex-col items-center p-[5rem]">
       <FaPeopleRoof className="text-[4rem]" />
@@ -228,114 +186,14 @@ const CommunitySettings = () => {
           </tbody>
         </table>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            navigate("/community");
+          }}
           className="mt-5 p-3 bg-green-500 text-white rounded-lg"
         >
-          Add Community
+          Manage Communities
         </button>
       </div>
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-5 rounded-lg w-1/3 h-[80%]">
-            <h2 className="text-2xl font-bold mb-4 w-full text-center">
-              Add New Community
-            </h2>
-            <div className="mb-4">
-              <label className="block text-lg">Community Name</label>
-              <input
-                type="text"
-                className="border-2 w-full p-2 rounded-lg"
-                value={newCommunity.name}
-                onChange={(e) =>
-                  setNewCommunity({ ...newCommunity, name: e.target.value })
-                }
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-lg">Community Phone No</label>
-              <input
-                type="text"
-                className="border-2 w-full p-2 rounded-lg"
-                value={newCommunity.phone}
-                onChange={(e) =>
-                  setNewCommunity({ ...newCommunity, phone: e.target.value })
-                }
-              />
-            </div>
-            <h2 className="text-2xl font-bold mb-4 w-full text-center">
-              Community Head Details
-            </h2>
-            <div className="mb-4">
-              <label className="block text-lg">Head Name</label>
-              <input
-                type="text"
-                className="border-2 w-full p-2 rounded-lg"
-                value={newCommunity.headOfCommunity.fullName}
-                onChange={(e) =>
-                  setNewCommunity({
-                    ...newCommunity,
-                    headOfCommunity: {
-                      ...newCommunity.headOfCommunity,
-                      fullName: e.target.value,
-                    },
-                  })
-                }
-              />
-            </div>
-            <div className="flex justify-around">
-              <div className="mb-4">
-                <label className="block text-lg">Phone no</label>
-                <input
-                  type="text"
-                  className="border-2 w-full p-2 rounded-lg"
-                  value={newCommunity.headOfCommunity.phoneNumber}
-                  onChange={(e) =>
-                    setNewCommunity({
-                      ...newCommunity,
-                      headOfCommunity: {
-                        ...newCommunity.headOfCommunity,
-                        phoneNumber: e.target.value,
-                      },
-                    })
-                  }
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-lg">Email</label>
-                <input
-                  type="text"
-                  className="border-2 w-full p-2 rounded-lg"
-                  value={newCommunity.headOfCommunity.email}
-                  onChange={(e) =>
-                    setNewCommunity({
-                      ...newCommunity,
-                      headOfCommunity: {
-                        ...newCommunity.headOfCommunity,
-                        email: e.target.value,
-                      },
-                    })
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex justify-center">
-              <button
-                onClick={handleAddCommunity}
-                className="mt-2 p-3 bg-green-500 text-white rounded-lg"
-              >
-                Add
-              </button>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="mt-2 ml-2 p-3 bg-red-500 text-white rounded-lg"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

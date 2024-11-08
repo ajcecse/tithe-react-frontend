@@ -12,192 +12,68 @@ import { FaArrowRightArrowLeft } from "react-icons/fa6";
 import { FaGears } from "react-icons/fa6";
 import { FaPeopleRoof } from "react-icons/fa6";
 import { FaPeopleCarry } from "react-icons/fa";
+import DashboardButton from "../components/DashboardButton";
 
 const Dashboard = () => {
   return (
-    <div className="flex flex-col items-center p-5">
-      <img className="fadedown h-[10rem]" src={logo} />
-      <h1 className="text-[2rem] font-bold mb-4 fadedown">
-        Kanjirapally Diocese Finance Mangement
-      </h1>
+    <div className="flex w-full">
+      {/* Side Menu */}
+      <div className="h-screen bg-gray-200 border-black border-2">
+        <DashboardButton
+          link="/finance"
+          Icon={FaMoneyBillWave}
+          title="Family Finance"
+        />
+        <DashboardButton
+          link="/financesettings"
+          Icon={FaGears}
+          title="Finance Settings"
+        />
+        <DashboardButton
+          link="/statistics"
+          Icon={ImStatsDots}
+          title="Statistics"
+        />
+        <DashboardButton
+          link="/community"
+          Icon={FaPeopleRoof}
+          title="Manage Communities"
+        />
+        <DashboardButton
+          link="/projects"
+          Icon={FaPeopleCarry}
+          title="Manage Other Projects"
+        />
+        <DashboardButton
+          link="/moveperson"
+          Icon={FaArrowRightArrowLeft}
+          title="Move Person"
+        />
+        <DashboardButton
+          link="/family"
+          Icon={MdFamilyRestroom}
+          title="Manage Families"
+        />
 
-      <div className="flex flex-col mt-2 w-full">
-        <div className="flex justify-center p-2 gap-10">
-          <div className="bg-white p-5 rounded shadow w-[50%] flex justify-center fadeup">
-            <Link
-              to="/finance"
-              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <div className="flex flex-col gap-5 items-center">
-                <div className="flex gap-3 text-[2rem]">
-                  <FaMoneyBillWave />
-                </div>
-                <h1 className="text-[1.3rem] font-regular">Family Finance</h1>
-              </div>
-            </Link>
-          </div>
-          <div className="bg-white p-5 rounded shadow w-[50%] flex justify-center fadeup">
-            <Link
-              to="/financesettings"
-              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <div className="flex flex-col gap-5 items-center">
-                <div className="flex gap-3 text-[2rem]">
-                  <FaGears />
-                </div>
-                <h1 className="text-[1.3rem] font-regular">Finance Setting</h1>
-              </div>
-            </Link>
-          </div>
+        <DashboardButton
+          link="/koottayma"
+          Icon={FaPeopleGroup}
+          title="Manage Kootayma"
+        />
+        <DashboardButton
+          link="/movefamily"
+          Icon={FaArrowRightArrowLeft}
+          title="Move Family"
+        />
+        <DashboardButton link="/parish" Icon={FaChurch} title="Manage Parish" />
+        <DashboardButton link="/forane" Icon={FaCross} title="Manage Forane" />
+      </div>
+      <div className="w-full">
+        <img className="fadedown h-[10rem]" src={logo} />
 
-          <div className="bg-white p-5 rounded shadow w-[50%] flex justify-center fadeup">
-            <Link
-              to="/statistics"
-              className="flex items-center gap-5 font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <div className="flex flex-col gap-5 items-center">
-                <div className="flex gap-3 text-[2rem]">
-                  <ImStatsDots />
-                </div>
-
-                <h1 className="text-[1.3rem] font-regular">Statistics</h1>
-              </div>
-            </Link>
-          </div>
-          <div className="bg-white p-5 rounded shadow w-[50%] flex justify-center fadeup">
-            <Link
-              to="/community"
-              className="flex items-center gap-5 font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <div className="flex flex-col gap-5 items-center">
-                <div className="flex gap-3 text-[2rem]">
-                  <FaPeopleRoof />{" "}
-                </div>
-                <h1 className="text-[1.3rem] font-regular">
-                  Create/Manage Communities
-                </h1>
-              </div>
-            </Link>
-          </div>
-          <div className="bg-white p-5 rounded shadow w-[50%] flex justify-center fadeup">
-            <Link
-              to="/projects"
-              className="flex items-center gap-5 font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <div className="flex flex-col gap-5 items-center">
-                <div className="flex gap-3 text-[2rem]">
-                  <FaPeopleCarry />{" "}
-                </div>
-                <h1 className="text-[1.3rem] font-regular">
-                  Create/Manage Other Projects
-                </h1>
-              </div>
-            </Link>
-          </div>
-        </div>
-
-        <div className="flex p-3 gap-[3rem]">
-          {/* <div className="bg-white p-4 rounded shadow w-full flex justify-center fadeup">
-            <h2 className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer">
-              <h1>Manage Family</h1>
-            </h2>
-          </div> */}
-          <div className="bg-white p-4 rounded shadow w-full flex justify-center fadeup">
-            <Link
-              to="/moveperson"
-              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <div className="flex flex-col gap-5 items-center">
-                <div className="flex gap-3 text-[2rem]">
-                  <FaPerson />
-                  <FaArrowRightArrowLeft />
-                  <FaPerson />
-                </div>
-                <h1 className="text-[1.3rem] font-regular">Move Person</h1>
-              </div>
-            </Link>
-          </div>
-          <div className="bg-white py-5 px-[0rem] rounded shadow w-full flex justify-center fadeup">
-            <Link
-              to="/movefamily"
-              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <div className="flex flex-col gap-5 items-center">
-                <div className="flex gap-3 text-[2rem]">
-                  <MdFamilyRestroom />
-                  <FaArrowRightArrowLeft />
-                  <MdFamilyRestroom />
-                </div>
-
-                <h1 className="text-[1.3rem] font-regular">Move Family</h1>
-              </div>
-            </Link>
-          </div>
-        </div>
-        {/* <div className="flex p-3 gap-[3rem]">
-          <div className="bg-white p-4 rounded shadow w-full flex justify-center fadeup">
-            <Link
-              to="/familymanage"
-              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <h1>Add Person</h1>
-            </Link>
-          </div>
-          <div className="bg-white p-4 rounded shadow w-full flex justify-center fadeup">
-            <Link
-              to="/familymanage"
-              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <h1>Manage Person</h1>
-            </Link>
-          </div>
-        </div> */}
-        <div className="flex p-3 gap-[3rem]">
-          <div className="bg-white p-4 rounded shadow w-full flex justify-center fadeup">
-            <Link
-              to="/family"
-              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <div className="flex gap-5 items-center">
-                <MdFamilyRestroom />
-                <h1>Create/Manage Family</h1>
-              </div>
-            </Link>
-          </div>
-          <div className="bg-white p-4 rounded shadow w-full flex justify-center fadeup">
-            <Link
-              to="/koottayma"
-              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <div className="flex gap-5 items-center">
-                <FaPeopleGroup />
-                <h1>Create/Manage Koottayma</h1>
-              </div>
-            </Link>
-          </div>
-          <div className="bg-white p-4 rounded shadow w-full flex justify-center fadeup">
-            <Link
-              to="/parish"
-              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <div className="flex gap-5 items-center">
-                <FaChurch />
-                <h1>Create/Manage Parish</h1>
-              </div>
-            </Link>
-          </div>
-          <div className="bg-white p-4 rounded shadow w-full flex justify-center fadeup">
-            <Link
-              to="/forane"
-              className="font-bold text-lg hover:underline underline-offset-8 cursor-pointer"
-            >
-              <div className="flex gap-5 items-center">
-                <FaCross />
-                <h1>Create/Manage Forane</h1>
-              </div>
-            </Link>
-          </div>
-        </div>
+        <h1 className="text-[2rem] font-bold mb-4 fadedown">
+          Kanjirapally Diocese Finance Mangement
+        </h1>
       </div>
     </div>
   );

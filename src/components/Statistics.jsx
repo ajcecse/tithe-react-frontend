@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../axiosConfig";
-import StatBasicUnit from "../components/StatBasicUnit";
+import StatBasicUnit from "./StatBasicUnit";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { axisClasses } from "@mui/x-charts/ChartsAxis";
@@ -134,9 +134,9 @@ const Statistics = () => {
     ["Cyan", "DeepPink"],
   ];
   return (
-    <div className="bg-gray-50 p-10 flex flex-col items-center">
+    <div className="bg-gray-50 p-10 flex flex-col items-center w-full">
       <h1 className="text-[2rem] font-bold fadedown">Overview</h1>
-      <div className="flex gap-[5rem] p-5">
+      <div className="flex gap-[1rem] p-5">
         <StatBasicUnit unit="Foranes" number={foranes.length} Icon={FaCross} />
         <StatBasicUnit unit="Parishes" number={parishCount} Icon={FaChurch} />
         <StatBasicUnit
@@ -151,7 +151,7 @@ const Statistics = () => {
         />
         <StatBasicUnit unit="Persons" number={personCount} Icon={FaPerson} />
       </div>
-      <div className="flex flex-col items-center gap-5 py-10">
+      {/* <div className="flex flex-col items-center gap-5 py-10">
         <h1 className="text-[1.5rem] fadedown">Population Statistics</h1>
         <div className="flex fadedown">
           <PieChart
@@ -237,7 +237,7 @@ const Statistics = () => {
             {...chartSetting}
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

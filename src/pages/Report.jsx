@@ -538,3 +538,12 @@ const Report = () => {
 };
 
 export default Report;
+
+// const individual_pre_proportional_share = individual_collection - individual_prelim
+
+// if (individual_pre_proportional_share > 0)
+//     const total_pre_proprotional_share = array.map(individual_pre_proportional_share);
+// const parish_percent = 0.75;
+// const percentage_prop_share = ((total_allocation_after_community*parish_percent - total_prelim) / total_pre_proprotional_share) * 100
+
+// const individual_total_allocated = individual_pre_proportional_share*(percentage_prop_share/100) + individual_prelim

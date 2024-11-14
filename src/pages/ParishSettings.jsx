@@ -1,25 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaChurch } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axiosConfig.jsx";
 import TotalAmountModal from "../components/TotalAmountModal.jsx";
 import SlabsModal from "../components/SlabsModal.jsx";
-const settingsData = [
-  {
-    name: "St.Parish",
-    collection: 32234,
-    prelim: 1231,
-    prop: 23142,
-    total: 23425,
-  },
-  {
-    name: "St.Antony's",
-    collection: 2352,
-    prelim: 1231,
-    prop: 23142,
-    total: 23425,
-  },
-];
 const totalAmount = 100000;
 const handleSaveTotalAmount = (data) => {
   console.log("Saved data:", data);
@@ -46,13 +30,67 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
 const ParishSettings = () => {
   const navigate = useNavigate();
-
+  const [parishData, setParishData] = useState([
+    {
+      name: "St.Parish",
+      collection: 32234,
+      prelim: 0,
+      prop: 23142,
+      total: 23425,
+    },
+    {
+      name: "St.Antony's",
+      collection: 24352,
+      prelim: 0,
+      prop: 23142,
+      total: 23425,
+    },
+  ]);
   // Modal visibility state
   const [isTotalAmountModalOpen, setIsTotalAmountModalOpen] = useState(false);
   const [isChangeParishModalOpen, setIsChangeParishModalOpen] = useState(false);
   const [isSlabsModalOpen, setSlabsModalOpen] = useState(false);
-  const [savedSlabs, setSavedSlabs] = useState([]);
+  const [savedSlabs, setSavedSlabs] = useState([
+    { maxValue: "0", minValue: 0 },
+  ]);
 
+  useEffect(() => {
+    console.log("this happend");
+    assignPrelimAllocation();
+  }, [savedSlabs]);
+
+  const assignPrelimAllocation = () => {
+    // Create a new array for updated parish data
+
+    const updatedParishData = parishData.map((parish) => {
+      // Find the matching slab based on the collection value
+      const matchingSlab = savedSlabs.find(
+        (slab) =>
+          slab.minValue <= parish.collection &&
+          parish.collection <= slab.maxValue
+      );
+
+      // Get the maximum value from the biggest slab for comparison
+      const maxOfBiggestSlab = Math.max(
+        ...savedSlabs.map((slab) => slab.maxValue)
+      );
+
+      // If a matching slab is found, update prelim with maxValue of that slab
+      if (matchingSlab) {
+        return { ...parish, prelim: matchingSlab.maxValue };
+      }
+      // If collection exceeds maxValue of the biggest slab, set prelim to maxOfBiggestSlab
+      else if (parish.collection > maxOfBiggestSlab) {
+        return { ...parish, prelim: maxOfBiggestSlab };
+      }
+
+      // Otherwise, return parish as is
+      return parish;
+    });
+
+    // Update the state with the modified parish data array
+    setParishData(updatedParishData);
+  };
   const handleSaveSlabs = (slabs) => {
     console.log("Saved slabs:", slabs);
     setSavedSlabs(slabs); // Store or send data to backend
@@ -105,7 +143,7 @@ const ParishSettings = () => {
             </tr>
           </thead>
           <tbody className="text-[1.2rem] text-center">
-            {settingsData.map((parish, index) => (
+            {parishData.map((parish, index) => (
               <tr key={index}>
                 <td className="p-3">{parish.name}</td>
                 <td className="p-3">{parish.collection}</td>

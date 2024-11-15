@@ -491,7 +491,7 @@ const FamilyManagement = () => {
       .save(); // Save the PDF
   };
   return !report ? (
-    <div className="container mx-auto flex flex-col items-center p-10 ">
+    <div className="mx-auto flex flex-col items-center p-10 w-full">
       <h1 className="text-3xl font-bold py-5">Family Finances</h1>
       <div className="min w-full flex flex-col items-center justify-around">
         <div className="flex justify-around w-full">

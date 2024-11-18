@@ -4,10 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axiosConfig.jsx";
 import TotalAmountModal from "../components/TotalAmountModal.jsx";
 import SlabsModal from "../components/SlabsModal.jsx";
-const handleSaveTotalAmount = (data) => {
-  console.log("Saved data:", data);
-  // Update state or send data to backend
-};
+import parishSettingsData from "../assets/parishSettings.js";
 // Reusable Modal Component
 const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
@@ -29,36 +26,25 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
 const ParishSettings = () => {
   const navigate = useNavigate();
-  const [totalAmount, setTotalAmount] = useState(100000);
+
   const [totalPreProportionalShare, setTotalPreProportionalShare] = useState(0);
   const [prePropPercent, setPrePropPercent] = useState(0);
   const [totalPrelim, setTotalPrelim] = useState(0);
-  const [parishData, setParishData] = useState([
-    {
-      name: "St.Parish",
-      collection: 32234,
-      prelim: 0,
-      prop: 23142,
-      total: 23425,
-      pre_prop: 0,
-    },
-    {
-      name: "St.Antony's",
-      collection: 24352,
-      prelim: 0,
-      prop: 23142,
-      total: 23425,
-      pre_prop: 0,
-    },
-  ]);
+  const [parishData, setParishData] = useState(parishSettingsData);
   // Modal visibility state
+  const [parishAmount, setParishAmount] = useState(0);
   const [isTotalAmountModalOpen, setIsTotalAmountModalOpen] = useState(false);
   const [isChangeParishModalOpen, setIsChangeParishModalOpen] = useState(false);
   const [isSlabsModalOpen, setSlabsModalOpen] = useState(false);
   const [savedSlabs, setSavedSlabs] = useState([
     { maxValue: "0", minValue: 0 },
   ]);
-
+  const handleSaveTotalAmount = (data) => {
+    console.log("Saved data:", data);
+    const totalAmount = parseFloat(data.parishAmount);
+    setParishAmount(totalAmount);
+    // Update state or send data to backend
+  };
   useEffect(() => {
     assignPrelimAllocation();
   }, [savedSlabs]);
@@ -79,6 +65,16 @@ const ParishSettings = () => {
     // Create a new array for updated parish data
     console.log("calculation done");
     const updatedParishData = parishData.map((parish) => {
+      // If parish.collection is 0, set prelim and pre_prop to 0
+      if (parish.collection === 0) {
+        return {
+          ...parish,
+          prelim: 0,
+          pre_prop: 0,
+          prop: 0,
+        };
+      }
+
       // Find the matching slab based on the collection value
       const matchingSlab = savedSlabs.find(
         (slab) =>
@@ -99,11 +95,22 @@ const ParishSettings = () => {
         prelim = maxOfBiggestSlab;
       }
 
-      // Return updated parish object including per_prop calculation
+      const propValue =
+        prePropPercent > 0
+          ? (parish.pre_prop * (prePropPercent / 100)).toFixed(2)
+          : 0;
+
+      const totalValue = parseFloat(prelim) + parseFloat(propValue);
+      // Calculate pre_prop
       return {
         ...parish,
         prelim,
-        pre_prop: prelim > 0 ? parish.collection - prelim : 0,
+        pre_prop:
+          prelim > 0 && parish.collection - prelim > 0
+            ? (parish.collection - prelim).toFixed(0)
+            : 0,
+        prop: propValue,
+        total: totalValue.toFixed(2),
       };
     });
 
@@ -116,11 +123,17 @@ const ParishSettings = () => {
   };
   const calTotalPreProp = () => {
     let total_pre_proportional_share = 0;
-    parishData.map((parish) => {
-      parish.pre_prop && (total_pre_proportional_share += parish.pre_prop);
+
+    parishData.forEach((parish) => {
+      let pre_prop_value = parseFloat(parish.pre_prop);
+      if (!isNaN(pre_prop_value) && pre_prop_value > 0) {
+        total_pre_proportional_share += pre_prop_value;
+      }
     });
+
     setTotalPreProportionalShare(total_pre_proportional_share);
   };
+
   const calTotalPrelim = () => {
     let total_prelim = 0;
     parishData.map((parish) => {
@@ -128,10 +141,17 @@ const ParishSettings = () => {
     });
     setTotalPrelim(total_prelim);
   };
+
   const calPropPercent = () => {
-    setPrePropPercent(
-      ((totalAmount - totalPrelim) / totalPreProportionalShare) * 100
-    );
+    if (parishAmount > 0 && totalPrelim > 0 && totalPreProportionalShare > 0) {
+      const percentage = (
+        ((parishAmount - totalPrelim) / totalPreProportionalShare) *
+        100
+      ).toFixed(5);
+      setPrePropPercent(percentage);
+    } else {
+      setPrePropPercent(0);
+    }
   };
   return (
     <div className="w-full flex flex-col items-center p-[5rem]">
@@ -140,8 +160,8 @@ const ParishSettings = () => {
       <div className="flex flex-col items-center">
         <div className="flex gap-[10rem] w-full p-5">
           <div className="flex gap-[3rem] text-[1.5rem]">
-            <h2 className="font-bold">Total Amount</h2>
-            <h2>{totalAmount}</h2>
+            <h2 className="font-bold">Amount Allocated For Parish </h2>
+            <h2 className="font-bold">{parishAmount}</h2>
           </div>
         </div>
       </div>
@@ -167,6 +187,12 @@ const ParishSettings = () => {
               className="p-3 bg-green-500 text-white rounded-lg"
             >
               Slab Settings
+            </button>
+            <button
+              onClick={() => assignPrelimAllocation()}
+              className="p-3 bg-green-500 text-white rounded-lg"
+            >
+              Calculate
             </button>
           </div>
           <div className="flex justify-around text-[1.5rem] w-full gap-[4rem]">
@@ -206,7 +232,7 @@ const ParishSettings = () => {
         isOpen={isTotalAmountModalOpen}
         onClose={() => setIsTotalAmountModalOpen(false)}
         title="Edit Total Amount"
-        totalBalance={30000}
+        totalBalance={17344060.67}
         onSave={handleSaveTotalAmount}
       />
 
